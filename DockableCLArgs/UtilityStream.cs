@@ -10,11 +10,11 @@ namespace ImaginationTechnologies.DockableCLArgs
 	/// <summary>
 	/// Wrapper around an IStream object.  Stream should really implement this, as it's pretty cookie-cutter.  But it doesn't.
 	/// </summary>
-	public class StreamEater : Stream
+	public class UtilityStream : Stream
 	{
 		private IStream _iStream;
 
-		public StreamEater(IStream streamFood)
+		public UtilityStream(IStream streamFood)
 		{
 			_iStream = streamFood;
 		}
@@ -65,7 +65,7 @@ namespace ImaginationTechnologies.DockableCLArgs
 		public override int Read(byte[] buffer, int offset, int count)
 		{
 			if ( buffer == null )
-				throw new ArgumentNullException("Buffer cannot be null.");
+				throw new ArgumentNullException("buffer", "buffer cannot be null");
 
 			uint byteCounter;
 			byte[] b = buffer;
@@ -106,7 +106,7 @@ namespace ImaginationTechnologies.DockableCLArgs
 		public override void Write(byte[] buffer, int offset, int count)
 		{
 			if ( buffer == null )
-				throw new ArgumentNullException("Buffer cannot be null.");
+				throw new ArgumentNullException("buffer", "buffer cannot be null");
 			else if ( !CanWrite )
 				throw new InvalidOperationException();
 
@@ -123,7 +123,7 @@ namespace ImaginationTechnologies.DockableCLArgs
 
 				_iStream.Write(b, (uint)count, out byteCounter);
 				if ( byteCounter != count )
-					throw new IOException("Failed to write the total number of bytes to IStream!");
+					throw new IOException("Failed to write the total number of bytes to wrapped stream!");
 
 				if ( offset != 0 ) {
 					b.CopyTo(buffer, offset);

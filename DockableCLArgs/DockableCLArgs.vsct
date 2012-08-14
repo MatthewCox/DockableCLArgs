@@ -39,7 +39,7 @@
          other menus or buttons (commands); from a visual point of view you can see the 
          group as the part of a menu contained between two lines. The parent of a group 
          must be a menu. -->
-    <Groups>
+    <!--<Groups>
 
       <Group guid="guidDockableCLArgsCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
@@ -47,7 +47,7 @@
       
 
 
-    </Groups>
+    </Groups>-->
     
     <!--Buttons section. -->
     <!--This section defines the elements the user can interact with, like a menu command or a button 
@@ -61,13 +61,13 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
 
-      <Button guid="guidDockableCLArgsCmdSet" id="cmdidCmdDCLA" priority="0x0100" type="Button">
+      <!--<Button guid="guidDockableCLArgsCmdSet" id="cmdidCmdDCLA" priority="0x0100" type="Button">
         <Parent guid="guidDockableCLArgsCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
           <ButtonText>Dockable Command Line Args</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
 
 
       <Button guid="guidDockableCLArgsCmdSet" id="cmdidToolDCLA" priority="0x0100" type="Button">
@@ -105,7 +105,7 @@
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidDockableCLArgsCmdSet" value="{307607f4-f234-4d7d-b5a8-6a18e6b2fbd2}">
 
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <!--<IDSymbol name="MyMenuGroup" value="0x1020" />-->
       <IDSymbol name="cmdidCmdDCLA" value="0x0100" />
       <IDSymbol name="cmdidToolDCLA" value="0x0101" />
     </GuidSymbol>

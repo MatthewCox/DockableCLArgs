@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,6 +21,8 @@ using EnvDTE100;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace ImaginationTechnologies.DockableCLArgs
 {
@@ -33,11 +37,26 @@ namespace ImaginationTechnologies.DockableCLArgs
         private DebuggerEvents debugEvents;
         private SolutionEvents solutionEvents;
 
-        public FixedSizeQueue<string> History = new FixedSizeQueue<string>(10);
+        private enum LANG
+        {
+            CS,
+            CPP,
+            UNKNOWN
+        }
+
+        private static LANG lang;
+
+        private FixedSizeQueue<string> history = new FixedSizeQueue<string>(10);
+        public FixedSizeQueue<string> History
+        {
+            get { return history; }
+        }
 
         public DockableCLArgsControl()
         {
             InitializeComponent();
+
+            lang = LANG.UNKNOWN;
 
             dte = Package.GetGlobalService(typeof(DTE)) as DTE2;
 
@@ -48,6 +67,17 @@ namespace ImaginationTechnologies.DockableCLArgs
             solutionEvents.Opened += SolutionEvents_OnOpened;
             solutionEvents.AfterClosing += SolutionEvents_OnAfterClosing;
 
+            foreach (var commandBinding in CmdArgs.TextArea.CommandBindings.Cast<CommandBinding>())
+            {
+                if (commandBinding.Command == ApplicationCommands.Paste)
+                {
+                    commandBinding.PreviewCanExecute += new CanExecuteRoutedEventHandler(pasteCommandBinding_PreviewCanExecute);
+                    break;
+                }
+            }
+
+            CmdArgs.SyntaxHighlighting = ResourceLoader.LoadHighlightingDefinition("Resources.CmdArgs.xshd");
+
             runChangedHandler = false;
             CmdArgs.Text = GetCommandArgs();
             runChangedHandler = true;
@@ -57,7 +87,7 @@ namespace ImaginationTechnologies.DockableCLArgs
 
         #region TextBox Events
 
-        private void OnTextChanged(object sender, TextChangedEventArgs e)
+        private void OnTextChanged(object sender, EventArgs e)
         {
             if (runChangedHandler)
             {
@@ -72,21 +102,74 @@ namespace ImaginationTechnologies.DockableCLArgs
             runChangedHandler = true;
         }
 
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // Prevent newlines from being entered
+            if (e.Key == Key.Return)
+            {
+                e.Handled = true;
+            }
+        }
+
+        // Replace newlines in pasted text data
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Windows.Clipboard.SetText(System.String)")]
+        private void pasteCommandBinding_PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var dataObject = Clipboard.GetDataObject();
+            var text = (string)dataObject.GetData(DataFormats.UnicodeText);
+            text = TextUtilities.NormalizeNewLines(text, Environment.NewLine);
+
+            if (text.Contains(Environment.NewLine))
+            {
+                e.CanExecute = false;
+                e.Handled = true;
+                text = text.Replace(Environment.NewLine, " ");
+                Clipboard.SetText(text);
+                CmdArgs.Paste();
+            }
+        }
+
         #endregion TextBox Events
 
         #region IDE Events
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "ICSharpCode.AvalonEdit.TextEditor.set_Text(System.String)")]
         private void SolutionEvents_OnOpened()
         {
-            runChangedHandler = false;
-            CmdArgs.Text = GetCommandArgs();
-            runChangedHandler = true;
+            lang = LANG.UNKNOWN;
 
-            CmdArgs.IsEnabled = true;
+            IVsHierarchy startupProjHierarchy = GetStartupProjectHierarchy();
+            EnvDTE.Properties props = GetDtePropertiesFromHierarchy(startupProjHierarchy);
+            string commandArgs = GetProperty(props, "CommandArguments") as string ?? string.Empty;
+            if (String.IsNullOrEmpty(commandArgs))
+            {
+                commandArgs = GetProperty(props, "StartArguments") as string ?? string.Empty;
+                if (!String.IsNullOrEmpty(commandArgs))
+                    lang = LANG.CS;
+            }
+            else
+                lang = LANG.CPP;
+
+            if (lang != LANG.UNKNOWN)
+            {
+                runChangedHandler = false;
+                CmdArgs.Text = GetCommandArgs();
+                runChangedHandler = true;
+
+                CmdArgs.IsEnabled = true;
+            }
+            else
+            {
+                runChangedHandler = false;
+                CmdArgs.Text = "Project type unsupported (C++, C#, and VB are supported (VB untested))";
+                runChangedHandler = true;
+            }
         }
 
         private void SolutionEvents_OnAfterClosing()
         {
+            lang = LANG.UNKNOWN;
+
             runChangedHandler = false;
             CmdArgs.Text = GetCommandArgs();
             runChangedHandler = true;
@@ -128,7 +211,7 @@ namespace ImaginationTechnologies.DockableCLArgs
 
             CmdArgsCtxMenu_HistoryMenu.IsEnabled = false;
 
-            if (CmdArgs.SelectedText == "")
+            if (String.IsNullOrEmpty(CmdArgs.SelectedText))
             {
                 CmdArgsCtxMenu_Cut.IsEnabled = false;
                 CmdArgsCtxMenu_Copy.IsEnabled = false;
@@ -138,12 +221,12 @@ namespace ImaginationTechnologies.DockableCLArgs
                 CmdArgsCtxMenu_Paste.IsEnabled = false;
             }
 
-            if (History.Count > 0)
+            if (history.Count > 0)
             {
                 CmdArgsCtxMenu_HistoryMenu.IsEnabled = true;
 
                 CmdArgsCtxMenu_HistoryMenu.Items.Clear();
-                foreach (string historyEntry in History)
+                foreach (string historyEntry in history)
                 {
                     MenuItem historyMI = new MenuItem();
                     TextBlock textBlock = new TextBlock();
@@ -164,7 +247,7 @@ namespace ImaginationTechnologies.DockableCLArgs
                     CmdArgsCtxMenu_HistoryMenu.Items.Add(historyMI);
                 }
 
-                CmdArgsCtxMenu_HistoryMenu.Header = string.Format("History ({0}/{1})", CmdArgsCtxMenu_HistoryMenu.Items.Count, History.Size);
+                CmdArgsCtxMenu_HistoryMenu.Header = string.Format(CultureInfo.CurrentCulture, "History ({0}/{1})", CmdArgsCtxMenu_HistoryMenu.Items.Count, history.Size);
 
                 CmdArgsCtxMenu_HistoryMenu.UpdateLayout();
             }
@@ -192,35 +275,55 @@ namespace ImaginationTechnologies.DockableCLArgs
 
         #region Core Functionality
 
-        private string GetCommandArgs()
+        private static string GetCommandArgs()
         {
             IVsHierarchy startupProjHierarchy = GetStartupProjectHierarchy();
             EnvDTE.Properties props = GetDtePropertiesFromHierarchy(startupProjHierarchy);
             if (props == null)
                 return "Disabled; no solution loaded";
-            return GetProperty(props, "CommandArguments") as string ?? string.Empty;
+
+            string commandArgs = string.Empty;
+            switch (lang)
+            {
+                case LANG.CPP:
+                    commandArgs = GetProperty(props, "CommandArguments") as string ?? string.Empty;
+                    break;
+                case LANG.CS:
+                    commandArgs = GetProperty(props, "StartArguments") as string ?? string.Empty;
+                    break;
+            }
+                
+            return commandArgs;
         }
 
-        private void SetCommandArgs(string value)
+        private static void SetCommandArgs(string value)
         {
             IVsHierarchy startupProjHierarchy = GetStartupProjectHierarchy();
             EnvDTE.Properties props = GetDtePropertiesFromHierarchy(startupProjHierarchy);
             if (props == null)
                 return;
-            SetProperty(props, "CommandArguments", value);
+            switch (lang)
+            {
+                case LANG.CPP:
+                    SetProperty(props, "CommandArguments", value);
+                    break;
+                case LANG.CS:
+                    SetProperty(props, "StartArguments", value);
+                    break;
+            }
         }
 
         private void AddToHistory(string value)
         {
-            if (value.Trim() != string.Empty && !History.Contains(value))
-                History.Enqueue(value);
+            if (!String.IsNullOrEmpty(value.Trim()) && !history.Contains(value))
+                history.Enqueue(value);
         }
 
         #endregion Core Functionality
 
         #region Base Utility Functions
 
-        private IVsHierarchy GetStartupProjectHierarchy()
+        private static IVsHierarchy GetStartupProjectHierarchy()
         {
             IVsSolutionBuildManager build = DockableCLArgsPackage.GetGlobalService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager;
             IVsHierarchy hierarchy;
@@ -231,7 +334,7 @@ namespace ImaginationTechnologies.DockableCLArgs
             return hierarchy;
         }
 
-        private EnvDTE.Properties GetDtePropertiesFromHierarchy(IVsHierarchy hierarchy)
+        private static EnvDTE.Properties GetDtePropertiesFromHierarchy(IVsHierarchy hierarchy)
         {
             if (hierarchy == null)
                 return null;
@@ -255,7 +358,7 @@ namespace ImaginationTechnologies.DockableCLArgs
             return activeConfig.Properties;
         }
 
-        private object GetProperty(EnvDTE.Properties properties, string name)
+        private static object GetProperty(EnvDTE.Properties properties, string name)
         {
             if (properties == null || string.IsNullOrEmpty(name))
                 return null;
@@ -268,13 +371,13 @@ namespace ImaginationTechnologies.DockableCLArgs
 
                 return property.Value;
             }
-            catch (Exception)
+            catch (InvalidCastException)
             {
                 return null;
             }
         }
 
-        private bool SetProperty(EnvDTE.Properties properties, string name, object value)
+        private static bool SetProperty(EnvDTE.Properties properties, string name, object value)
         {
             if (properties == null || string.IsNullOrEmpty(name))
                 return false;
@@ -289,7 +392,7 @@ namespace ImaginationTechnologies.DockableCLArgs
 
                 return true;
             }
-            catch (Exception)
+            catch (InvalidCastException)
             {
                 return false;
             }
