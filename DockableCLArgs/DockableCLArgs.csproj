@@ -154,6 +154,11 @@
     </Compile>
     <Compile Include="DockableCLArgsToolWindow.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="ResourceLoader.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -164,6 +169,8 @@
     <Compile Include="DockableCLArgsPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="SimpleHighlightingBrush.cs" />
     <Compile Include="UtilityStream.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -178,9 +185,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\CmdArgs.xshd">
+    <EmbeddedResource Include="Resources\CmdArgs-light.xshd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\CmdArgs-dark.xshd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>

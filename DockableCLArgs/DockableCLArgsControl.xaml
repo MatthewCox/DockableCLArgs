@@ -22,17 +22,6 @@
                     </ContextMenu>
                 </avalonEdit:TextEditor.ContextMenu>
             </avalonEdit:TextEditor>
-            <!--<TextBox x:Name="CmdArgs" TextWrapping="Wrap"  Text="" AcceptsReturn="False" VerticalScrollBarVisibility="Auto" TextChanged="OnTextChanged" GotFocus="OnFocus">
-                <TextBox.ContextMenu>
-                    <ContextMenu Name="CmdArgsCtxMenu" Opened="OnCmdArgsCtxMenu_Opened">
-                        <MenuItem Header="Cut" Name="CmdArgsCtxMenu_Cut" Click="OnCmdArgsCtxMenu_Cut"/>
-                        <MenuItem Header="Copy" Name="CmdArgsCtxMenu_Copy" Click="OnCmdArgsCtxMenu_Copy"/>
-                        <MenuItem Header="Paste" Name="CmdArgsCtxMenu_Paste" Click="OnCmdArgsCtxMenu_Paste"/>
-                        <Separator/>
-                        <MenuItem Header="History" Name="CmdArgsCtxMenu_HistoryMenu"/>
-                    </ContextMenu>
-                </TextBox.ContextMenu>
-            </TextBox>-->
         </DockPanel>
     </Grid>
 </UserControl>

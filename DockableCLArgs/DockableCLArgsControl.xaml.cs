@@ -23,6 +23,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Document;
+using ImaginationTechnologies.DockableCLArgs.Properties;
 
 namespace ImaginationTechnologies.DockableCLArgs
 {
@@ -67,6 +68,8 @@ namespace ImaginationTechnologies.DockableCLArgs
             solutionEvents.Opened += SolutionEvents_OnOpened;
             solutionEvents.AfterClosing += SolutionEvents_OnAfterClosing;
 
+            Properties.Settings.Default.PropertyChanged += OnSettingChanged;
+
             foreach (var commandBinding in CmdArgs.TextArea.CommandBindings.Cast<CommandBinding>())
             {
                 if (commandBinding.Command == ApplicationCommands.Paste)
@@ -76,7 +79,7 @@ namespace ImaginationTechnologies.DockableCLArgs
                 }
             }
 
-            CmdArgs.SyntaxHighlighting = ResourceLoader.LoadHighlightingDefinition("Resources.CmdArgs.xshd");
+            SetPlainTextColours();
 
             runChangedHandler = false;
             CmdArgs.Text = GetCommandArgs();
@@ -97,6 +100,8 @@ namespace ImaginationTechnologies.DockableCLArgs
 
         private void OnFocus(object sender, RoutedEventArgs e)
         {
+            SetPlainTextColours();
+
             runChangedHandler = false;
             CmdArgs.Text = GetCommandArgs();
             runChangedHandler = true;
@@ -131,6 +136,15 @@ namespace ImaginationTechnologies.DockableCLArgs
 
         #endregion TextBox Events
 
+        #region Addin Events
+
+        private void OnSettingChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            SetPlainTextColours();
+        }
+
+        #endregion Addin Events
+
         #region IDE Events
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "ICSharpCode.AvalonEdit.TextEditor.set_Text(System.String)")]
@@ -164,6 +178,8 @@ namespace ImaginationTechnologies.DockableCLArgs
                 CmdArgs.Text = "Project type unsupported (C++, C#, and VB are supported (VB untested))";
                 runChangedHandler = true;
             }
+
+            SetPlainTextColours();
         }
 
         private void SolutionEvents_OnAfterClosing()
@@ -396,6 +412,89 @@ namespace ImaginationTechnologies.DockableCLArgs
             {
                 return false;
             }
+        }
+
+        private static FontsAndColorsItems GetTextEditorFontAndColorsItems(DTE2 dte)
+        {
+            EnvDTE.Properties props = dte.get_Properties("FontsAndColors", "TextEditor");
+            return props.Item("FontsAndColorsItems").Object as FontsAndColorsItems;
+        }
+
+        private static System.Windows.Media.Color GetBackgroundColourOf(FontsAndColorsItems faci, string item)
+        {
+            Int32 oleColor = System.Convert.ToInt32(faci.Item(item).Background);
+            System.Drawing.Color sdColor = System.Drawing.ColorTranslator.FromOle(oleColor);
+            System.Windows.Media.Color backColor = System.Windows.Media.Color.FromArgb(sdColor.A, sdColor.R, sdColor.G, sdColor.B);
+            return backColor;
+        }
+
+        private static System.Windows.Media.Color GetForegroundColourOf(FontsAndColorsItems faci, string item)
+        {
+            Int32 oleColor = System.Convert.ToInt32(faci.Item(item).Foreground);
+            System.Drawing.Color sdColor = System.Drawing.ColorTranslator.FromOle(oleColor);
+            System.Windows.Media.Color foreColor = System.Windows.Media.Color.FromArgb(sdColor.A, sdColor.R, sdColor.G, sdColor.B);
+            return foreColor;
+        }
+
+        //private static bool GetBoldednessOf(FontsAndColorsItems faci, string item)
+        //{
+        //    return faci.Item(item).Bold;
+        //}
+
+        private void SetPlainTextColours()
+        {
+            FontsAndColorsItems faci = GetTextEditorFontAndColorsItems(dte);
+            Color back = GetBackgroundColourOf(faci, "Plain Text");
+            Color fore = GetForegroundColourOf(faci, "Plain Text");
+            CmdArgs.Background = new SolidColorBrush(back);
+            CmdArgs.Foreground = new SolidColorBrush(fore);
+            
+            if (IsLightTheme(back))
+                CmdArgs.SyntaxHighlighting = ResourceLoader.LoadHighlightingDefinition("Resources.CmdArgs-light.xshd");
+            else
+                CmdArgs.SyntaxHighlighting = ResourceLoader.LoadHighlightingDefinition("Resources.CmdArgs-dark.xshd");
+
+            Color digitColor;
+            Color optionColor;
+            Color subOptionColor;
+            if (IsLightTheme(back))
+            {
+                digitColor = ConvertToMediaColor(Properties.Settings.Default.DigitColorLight);
+                optionColor = ConvertToMediaColor(Properties.Settings.Default.OptionColorLight);
+                subOptionColor = ConvertToMediaColor(Properties.Settings.Default.SubOptionColorLight);
+            }
+            else
+            {
+                digitColor = ConvertToMediaColor(Properties.Settings.Default.DigitColorDark);
+                optionColor = ConvertToMediaColor(Properties.Settings.Default.OptionColorDark);
+                subOptionColor = ConvertToMediaColor(Properties.Settings.Default.SubOptionColorDark);
+            }
+            foreach (HighlightingColor hColor in CmdArgs.SyntaxHighlighting.NamedHighlightingColors)
+            {
+                switch (hColor.Name)
+                {
+                    case "Digits":
+                        hColor.Foreground = new SimpleHighlightingBrush(digitColor);
+                        break;
+                    case "Option":
+                        hColor.Foreground = new SimpleHighlightingBrush(optionColor);
+                        break;
+                    case "SubOption":
+                        hColor.Foreground = new SimpleHighlightingBrush(subOptionColor);
+                        break;
+                }
+            }
+        }
+
+        private static bool IsLightTheme(System.Windows.Media.Color plainTextBackgroundColour)
+        {
+            Color ptbc = plainTextBackgroundColour;
+            return ptbc.R + ptbc.G + ptbc.B > (128 * 3);
+        }
+
+        private static System.Windows.Media.Color ConvertToMediaColor(System.Drawing.Color color)
+        {
+            return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
         #endregion Base Utility Functions

@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ImaginationTechnologies.DockableCLArgs.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="OptionColorDark" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">100, 140, 175</Value>
+    </Setting>
+    <Setting Name="DigitColorDark" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">255, 205, 34</Value>
+    </Setting>
+    <Setting Name="SubOptionColorDark" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">146, 202, 244</Value>
+    </Setting>
+    <Setting Name="HistorySize" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="OptionColorLight" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Blue</Value>
+    </Setting>
+    <Setting Name="DigitColorLight" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Maroon</Value>
+    </Setting>
+    <Setting Name="SubOptionColorLight" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Purple</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

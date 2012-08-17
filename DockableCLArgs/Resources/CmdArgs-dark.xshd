@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<!-- syntaxdefinition for Command Line Arguments by Matthew Cox -->
+<SyntaxDefinition name="CmdArgs" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Digits" foreground="#FFCD22" />
+  <Color name="Option" foreground="#648CAF" />
+  <Color name="SubOption" foreground="#92CAF4" />
+
+  <RuleSet ignoreCase="true">
+
+    <Rule color="Digits">
+      \b0[xX][0-9a-fA-F]+|(\b\d+(\.[0-9]+)?|\.[0-9]+)([eE][+-]?[0-9]+)?
+    </Rule>
+    
+    <Rule color="Option">
+      (^|\s)[\-/][^\s]+
+    </Rule>
+    
+    <Rule color="SubOption">
+      (?&lt;=\s)[^\s=\-]+\s*(?==)
+    </Rule>
+  
+  </RuleSet>
+  
+</SyntaxDefinition>
