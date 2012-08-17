@@ -7,7 +7,7 @@ using System.Xml;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
-namespace ImaginationTechnologies.DockableCLArgs
+namespace MattC.DockableCLArgs
 {
     static class ResourceLoader
     {

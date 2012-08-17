@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.IO;
 
-namespace ImaginationTechnologies.DockableCLArgs
+namespace MattC.DockableCLArgs
 {
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.

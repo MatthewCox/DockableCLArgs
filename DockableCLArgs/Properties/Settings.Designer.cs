@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ImaginationTechnologies.DockableCLArgs.Properties {
+namespace MattC.DockableCLArgs.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

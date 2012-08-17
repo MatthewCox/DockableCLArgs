@@ -9,7 +9,7 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Rendering;
 
-namespace ImaginationTechnologies.DockableCLArgs
+namespace MattC.DockableCLArgs
 {
     /// <summary>
     /// Highlighting brush implementation that takes a frozen brush.

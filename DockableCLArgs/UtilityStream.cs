@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using Microsoft.VisualStudio.OLE.Interop;
 
-namespace ImaginationTechnologies.DockableCLArgs
+namespace MattC.DockableCLArgs
 {
 	/// <summary>
 	/// Wrapper around an IStream object.  Stream should really implement this, as it's pretty cookie-cutter.  But it doesn't.

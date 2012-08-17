@@ -23,9 +23,9 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Document;
-using ImaginationTechnologies.DockableCLArgs.Properties;
+using MattC.DockableCLArgs.Properties;
 
-namespace ImaginationTechnologies.DockableCLArgs
+namespace MattC.DockableCLArgs
 {
     /// <summary>
     /// Interaction logic for DockableCLArgsControl.xaml

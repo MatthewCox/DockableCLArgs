@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ImaginationTechnologies.DockableCLArgs {
+namespace MattC.DockableCLArgs {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ImaginationTechnologies.DockableCLArgs {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ImaginationTechnologies.DockableCLArgs.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MattC.DockableCLArgs.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

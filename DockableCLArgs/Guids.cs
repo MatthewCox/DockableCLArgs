@@ -2,7 +2,7 @@
 // MUST match guids.h
 using System;
 
-namespace ImaginationTechnologies.DockableCLArgs
+namespace MattC.DockableCLArgs
 {
     static class GuidList
     {
