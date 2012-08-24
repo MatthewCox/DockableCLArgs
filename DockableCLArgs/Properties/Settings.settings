@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ImaginationTechnologies.DockableCLArgs.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MattC.DockableCLArgs.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="OptionColorDark" Type="System.Drawing.Color" Scope="User">
@@ -22,6 +22,12 @@
     </Setting>
     <Setting Name="SubOptionColorLight" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Purple</Value>
+    </Setting>
+    <Setting Name="ArgumentColorDark" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">LightGray</Value>
+    </Setting>
+    <Setting Name="ArgumentColorLight" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Black</Value>
     </Setting>
   </Settings>
 </SettingsFile>

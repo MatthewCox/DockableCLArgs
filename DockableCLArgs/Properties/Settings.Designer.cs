@@ -106,5 +106,29 @@ namespace MattC.DockableCLArgs.Properties {
                 this["SubOptionColorLight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("LightGray")]
+        public global::System.Drawing.Color ArgumentColorDark {
+            get {
+                return ((global::System.Drawing.Color)(this["ArgumentColorDark"]));
+            }
+            set {
+                this["ArgumentColorDark"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
+        public global::System.Drawing.Color ArgumentColorLight {
+            get {
+                return ((global::System.Drawing.Color)(this["ArgumentColorLight"]));
+            }
+            set {
+                this["ArgumentColorLight"] = value;
+            }
+        }
     }
 }

@@ -24,12 +24,16 @@ using Microsoft.VisualStudio.Shell.Interop;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Document;
 using MattC.DockableCLArgs.Properties;
+using ColorPickerControls.Chips;
+using ColorPickerControls.Pickers;
+using System.Text.RegularExpressions;
 
 namespace MattC.DockableCLArgs
 {
     /// <summary>
     /// Interaction logic for DockableCLArgsControl.xaml
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     public partial class DockableCLArgsControl : UserControl
     {
         private bool runChangedHandler = true;
@@ -47,15 +51,22 @@ namespace MattC.DockableCLArgs
 
         private static LANG lang;
 
-        private FixedSizeQueue<string> history = new FixedSizeQueue<string>(10);
+        private FixedSizeQueue<string> history;
         public FixedSizeQueue<string> History
         {
             get { return history; }
         }
 
+        private Color prevOptionColour;
+        private Color prevSubOptionColour;
+        private Color prevArgumentColour;
+        private Color prevDigitColour;
+
         public DockableCLArgsControl()
         {
             InitializeComponent();
+
+            history = new FixedSizeQueue<string>(Settings.Default.HistorySize);
 
             lang = LANG.UNKNOWN;
 
@@ -79,6 +90,8 @@ namespace MattC.DockableCLArgs
                 }
             }
 
+            OptionsHistorySize.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, DisablePasteEventHandler));
+
             SetPlainTextColours();
 
             runChangedHandler = false;
@@ -86,6 +99,54 @@ namespace MattC.DockableCLArgs
             runChangedHandler = true;
 
             CmdArgs.IsEnabled = false;
+
+            try
+            {
+                Init();
+            }
+            catch (Exception)
+            {
+                // Don't care if it fails
+            }
+        }
+
+        private void DisablePasteEventHandler(object sender, ExecutedRoutedEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void Init()
+        {
+            lang = LANG.UNKNOWN;
+
+            IVsHierarchy startupProjHierarchy = GetStartupProjectHierarchy();
+            EnvDTE.Properties props = GetDtePropertiesFromHierarchy(startupProjHierarchy);
+            string commandArgs = GetProperty(props, "CommandArguments") as string ?? string.Empty;
+            if (String.IsNullOrEmpty(commandArgs))
+            {
+                commandArgs = GetProperty(props, "StartArguments") as string ?? string.Empty;
+                if (!String.IsNullOrEmpty(commandArgs))
+                    lang = LANG.CS;
+            }
+            else
+                lang = LANG.CPP;
+
+            if (lang != LANG.UNKNOWN)
+            {
+                runChangedHandler = false;
+                CmdArgs.Text = GetCommandArgs();
+                runChangedHandler = true;
+
+                CmdArgs.IsEnabled = true;
+            }
+            else
+            {
+                runChangedHandler = false;
+                CmdArgs.Text = "Project type unsupported (C++, C#, and VB are supported (VB untested))";
+                runChangedHandler = true;
+            }
+
+            SetPlainTextColours();
         }
 
         #region TextBox Events
@@ -150,36 +211,7 @@ namespace MattC.DockableCLArgs
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "ICSharpCode.AvalonEdit.TextEditor.set_Text(System.String)")]
         private void SolutionEvents_OnOpened()
         {
-            lang = LANG.UNKNOWN;
-
-            IVsHierarchy startupProjHierarchy = GetStartupProjectHierarchy();
-            EnvDTE.Properties props = GetDtePropertiesFromHierarchy(startupProjHierarchy);
-            string commandArgs = GetProperty(props, "CommandArguments") as string ?? string.Empty;
-            if (String.IsNullOrEmpty(commandArgs))
-            {
-                commandArgs = GetProperty(props, "StartArguments") as string ?? string.Empty;
-                if (!String.IsNullOrEmpty(commandArgs))
-                    lang = LANG.CS;
-            }
-            else
-                lang = LANG.CPP;
-
-            if (lang != LANG.UNKNOWN)
-            {
-                runChangedHandler = false;
-                CmdArgs.Text = GetCommandArgs();
-                runChangedHandler = true;
-
-                CmdArgs.IsEnabled = true;
-            }
-            else
-            {
-                runChangedHandler = false;
-                CmdArgs.Text = "Project type unsupported (C++, C#, and VB are supported (VB untested))";
-                runChangedHandler = true;
-            }
-
-            SetPlainTextColours();
+            Init();
         }
 
         private void SolutionEvents_OnAfterClosing()
@@ -287,7 +319,201 @@ namespace MattC.DockableCLArgs
             runChangedHandler = true;
         }
 
+        private void OnCmdArgsCtxMenu_Options(object sender, RoutedEventArgs e)
+        {
+            if (OptionsPane.Visibility == System.Windows.Visibility.Collapsed)
+                OpenOptionsPane();
+            else
+            {
+                ResetColours();
+                CloseOptionsPane();
+            }
+        }
+
         #endregion Context Menu
+
+        #region Options Pane
+
+        private void OpenOptionsPane()
+        {
+            CmdArgsCtxMenu_Options.IsChecked = true;
+
+            FontsAndColorsItems faci = GetTextEditorFontAndColorsItems(dte);
+            Color back = GetBackgroundColourOf(faci, "Plain Text");
+
+            ColorChip colChip_Options = new ColorChip();
+            colChip_Options.Name = "OptionsColours_Options";
+            colChip_Options.Color = ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.OptionColorLight : Settings.Default.OptionColorDark);
+            prevOptionColour = colChip_Options.Color;
+            Label colChipLabel_Options = new Label();
+            colChipLabel_Options.Content = "Options";
+            DockPanel.SetDock(colChip_Options, Dock.Left);
+            DockPanel.SetDock(colChipLabel_Options, Dock.Left);
+            OptionsColoursDock_Options.Children.Add(colChip_Options);
+            OptionsColoursDock_Options.Children.Add(colChipLabel_Options);
+
+            ColorChip colChip_SubOptions = new ColorChip();
+            colChip_SubOptions.Name = "OptionsColours_SubOptions";
+            colChip_SubOptions.Color = ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.SubOptionColorLight : Settings.Default.SubOptionColorDark);
+            prevSubOptionColour = colChip_SubOptions.Color;
+            Label colChipLabel_SubOptions = new Label();
+            colChipLabel_SubOptions.Content = "Sub Options";
+            DockPanel.SetDock(colChip_SubOptions, Dock.Left);
+            DockPanel.SetDock(colChipLabel_SubOptions, Dock.Left);
+            OptionsColoursDock_SubOptions.Children.Add(colChip_SubOptions);
+            OptionsColoursDock_SubOptions.Children.Add(colChipLabel_SubOptions);
+
+            ColorChip colChip_Arguments = new ColorChip();
+            colChip_Arguments.Name = "OptionsColours_Arguments";
+            colChip_Arguments.Color = ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.ArgumentColorLight : Settings.Default.ArgumentColorDark);
+            prevArgumentColour = colChip_Arguments.Color;
+            Label colChipLabel_Arguments = new Label();
+            colChipLabel_Arguments.Content = "Arguments";
+            DockPanel.SetDock(colChip_Arguments, Dock.Left);
+            DockPanel.SetDock(colChipLabel_Arguments, Dock.Left);
+            OptionsColoursDock_Arguments.Children.Add(colChip_Arguments);
+            OptionsColoursDock_Arguments.Children.Add(colChipLabel_Arguments);
+
+            ColorChip colChip_Digits = new ColorChip();
+            colChip_Digits.Name = "OptionsColours_Digits";
+            colChip_Digits.Color = ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.DigitColorLight : Settings.Default.DigitColorDark);
+            prevDigitColour = colChip_Digits.Color;
+            Label colChipLabel_Digits = new Label();
+            colChipLabel_Digits.Content = "Digits";
+            DockPanel.SetDock(colChip_Digits, Dock.Left);
+            DockPanel.SetDock(colChipLabel_Digits, Dock.Left);
+            OptionsColoursDock_Digits.Children.Add(colChip_Digits);
+            OptionsColoursDock_Digits.Children.Add(colChipLabel_Digits);
+
+            ColorPickerStandard colPicker = new ColorPickerStandard();
+            colPicker.InitialColor = colChip_Options.Color;
+            colPicker.SelectedColor = colChip_Options.Color;
+            colPicker.SelectedColorChanged += colPicker_SelectedColorChanged;
+            ColourPanel.Children.Add(colPicker);
+
+            OptionsColours_Options.IsChecked = true;
+
+            OptionsHistorySize.Text = Settings.Default.HistorySize.ToString();
+
+            OptionsPane.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        private void CloseOptionsPane()
+        {
+            CmdArgsCtxMenu_Options.IsChecked = false;
+
+            OptionsPane.Visibility = System.Windows.Visibility.Collapsed;
+
+            ColourPanel.Children.Clear();
+
+            List<DockPanel> docks = new List<DockPanel>()
+            {
+                OptionsColoursDock_Options, OptionsColoursDock_SubOptions, OptionsColoursDock_Arguments, OptionsColoursDock_Digits
+            };
+
+            foreach (DockPanel dock in docks)
+            {
+                dock.Children.Clear();
+            }
+        }
+
+        private void OnColourRadio_Checked(object sender, RoutedEventArgs e)
+        {
+            List<RadioButton> radios = new List<RadioButton>()
+            {
+                OptionsColours_Options, OptionsColours_SubOptions, OptionsColours_Arguments, OptionsColours_Digits
+            };
+
+            foreach (RadioButton rad in radios)
+            {
+                if (rad.IsChecked == true)
+                {
+                    ColourPanel.Children.OfType<ColorPickerStandard>().First().InitialColor = ((DockPanel)rad.Content).Children.OfType<ColorChip>().First().Color;
+                    ColourPanel.Children.OfType<ColorPickerStandard>().First().SelectedColor = ((DockPanel)rad.Content).Children.OfType<ColorChip>().First().Color;
+                }
+            }
+        }
+
+        private void colPicker_SelectedColorChanged(object sender, ColorPicker.EventArgs<Color> e)
+        {
+            List<RadioButton> radios = new List<RadioButton>()
+            {
+                OptionsColours_Options, OptionsColours_SubOptions, OptionsColours_Arguments, OptionsColours_Digits
+            };
+
+            RadioButton rad = radios.First(c => c.IsChecked == true);
+            ((DockPanel)rad.Content).Children.OfType<ColorChip>().First().Color = e.Value;
+
+            System.Drawing.Color col = ConvertToDrawingColor(e.Value);
+
+            FontsAndColorsItems faci = GetTextEditorFontAndColorsItems(dte);
+            Color back = GetBackgroundColourOf(faci, "Plain Text");
+            if (IsLightTheme(back))
+            {
+                if (rad == OptionsColours_Options) Settings.Default.OptionColorLight = col;
+                else if (rad == OptionsColours_SubOptions) Settings.Default.SubOptionColorLight = col;
+                else if (rad == OptionsColours_Arguments) Settings.Default.ArgumentColorLight = col;
+                else if (rad == OptionsColours_Digits) Settings.Default.DigitColorLight = col;
+            }
+            else
+            {
+                if (rad == OptionsColours_Options) Settings.Default.OptionColorDark = col;
+                else if (rad == OptionsColours_SubOptions) Settings.Default.SubOptionColorDark = col;
+                else if (rad == OptionsColours_Arguments) Settings.Default.ArgumentColorDark = col;
+                else if (rad == OptionsColours_Digits) Settings.Default.DigitColorDark = col;
+            }
+        }
+
+        private void ResetColours()
+        {
+            FontsAndColorsItems faci = GetTextEditorFontAndColorsItems(dte);
+            Color back = GetBackgroundColourOf(faci, "Plain Text");
+            if (IsLightTheme(back))
+            {
+                Settings.Default.OptionColorLight = ConvertToDrawingColor(prevOptionColour);
+                Settings.Default.SubOptionColorLight = ConvertToDrawingColor(prevSubOptionColour);
+                Settings.Default.ArgumentColorLight = ConvertToDrawingColor(prevArgumentColour);
+                Settings.Default.DigitColorLight = ConvertToDrawingColor(prevDigitColour);
+            }
+            else
+            {
+                Settings.Default.OptionColorDark = ConvertToDrawingColor(prevOptionColour);
+                Settings.Default.SubOptionColorDark = ConvertToDrawingColor(prevSubOptionColour);
+                Settings.Default.ArgumentColorDark = ConvertToDrawingColor(prevArgumentColour);
+                Settings.Default.DigitColorDark = ConvertToDrawingColor(prevDigitColour);
+            }
+        }
+
+        private void OnHistorySize_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextNumeric(e.Text);
+        }
+
+        private static bool IsTextNumeric(string text)
+        {
+            Regex regex = new Regex("[^0-9]+"); //regex that matches disallowed text
+            return !regex.IsMatch(text);
+        }
+
+        private void OnApply_Click(object sender, RoutedEventArgs e)
+        {
+            uint newHistorySize = Settings.Default.HistorySize;
+            if (uint.TryParse(OptionsHistorySize.Text, out newHistorySize))
+            {
+                history.Resize(newHistorySize);
+                Settings.Default.HistorySize = newHistorySize;
+            }
+
+            CloseOptionsPane();
+        }
+
+        private void OnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            ResetColours();
+            CloseOptionsPane();
+        }
+
+        #endregion Options Pane
 
         #region Core Functionality
 
@@ -445,9 +671,7 @@ namespace MattC.DockableCLArgs
         {
             FontsAndColorsItems faci = GetTextEditorFontAndColorsItems(dte);
             Color back = GetBackgroundColourOf(faci, "Plain Text");
-            Color fore = GetForegroundColourOf(faci, "Plain Text");
             CmdArgs.Background = new SolidColorBrush(back);
-            CmdArgs.Foreground = new SolidColorBrush(fore);
             
             if (IsLightTheme(back))
                 CmdArgs.SyntaxHighlighting = ResourceLoader.LoadHighlightingDefinition("Resources.CmdArgs-light.xshd");
@@ -457,17 +681,20 @@ namespace MattC.DockableCLArgs
             Color digitColor;
             Color optionColor;
             Color subOptionColor;
+            Color argumentColor;
             if (IsLightTheme(back))
             {
                 digitColor = ConvertToMediaColor(Properties.Settings.Default.DigitColorLight);
                 optionColor = ConvertToMediaColor(Properties.Settings.Default.OptionColorLight);
                 subOptionColor = ConvertToMediaColor(Properties.Settings.Default.SubOptionColorLight);
+                argumentColor = ConvertToMediaColor(Properties.Settings.Default.ArgumentColorLight);
             }
             else
             {
                 digitColor = ConvertToMediaColor(Properties.Settings.Default.DigitColorDark);
                 optionColor = ConvertToMediaColor(Properties.Settings.Default.OptionColorDark);
                 subOptionColor = ConvertToMediaColor(Properties.Settings.Default.SubOptionColorDark);
+                argumentColor = ConvertToMediaColor(Properties.Settings.Default.ArgumentColorDark);
             }
             foreach (HighlightingColor hColor in CmdArgs.SyntaxHighlighting.NamedHighlightingColors)
             {
@@ -484,6 +711,7 @@ namespace MattC.DockableCLArgs
                         break;
                 }
             }
+            CmdArgs.Foreground = new SolidColorBrush(argumentColor);
         }
 
         private static bool IsLightTheme(System.Windows.Media.Color plainTextBackgroundColour)
@@ -495,6 +723,11 @@ namespace MattC.DockableCLArgs
         private static System.Windows.Media.Color ConvertToMediaColor(System.Drawing.Color color)
         {
             return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+        }
+
+        private static System.Drawing.Color ConvertToDrawingColor(System.Windows.Media.Color color)
+        {
+            return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
         #endregion Base Utility Functions

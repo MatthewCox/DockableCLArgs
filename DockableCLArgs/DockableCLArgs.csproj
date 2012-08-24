@@ -245,6 +245,18 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ColorPickerControls\ColorPickerControls.csproj">
+      <Project>{02e6c16f-757f-44ac-be66-c0d79c0ebe0b}</Project>
+      <Name>ColorPickerControls</Name>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </ProjectReference>
+    <ProjectReference Include="..\ColorPicker\ColorPicker.csproj">
+      <Project>{059dc6c7-59c6-4adf-8960-976a02e7498e}</Project>
+      <Name>ColorPicker</Name>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
   </PropertyGroup>

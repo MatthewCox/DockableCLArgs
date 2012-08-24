@@ -4,24 +4,62 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:cp="clr-namespace:ColorPickerControls.Pickers;assembly=ColorPickerControls"
+             xmlns:cc="clr-namespace:ColorPickerControls.Chips;assembly=ColorPickerControls"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="600" d:DesignWidth="600"
              Name="CmdLineArgs">
-    <Grid>
-        <DockPanel Height="Auto" Margin="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-            <avalonEdit:TextEditor x:Name="CmdArgs" FontFamily="Consolas" FontSize="10pt" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" TextChanged="OnTextChanged" GotFocus="OnFocus" PreviewKeyDown="OnPreviewKeyDown">
-                <avalonEdit:TextEditor.ContextMenu>
-                    <ContextMenu Name="CmdArgsCtxMenu" Opened="OnCmdArgsCtxMenu_Opened">
-                        <MenuItem Header="Cut" Name="CmdArgsCtxMenu_Cut" Click="OnCmdArgsCtxMenu_Cut"/>
-                        <MenuItem Header="Copy" Name="CmdArgsCtxMenu_Copy" Click="OnCmdArgsCtxMenu_Copy"/>
-                        <MenuItem Header="Paste" Name="CmdArgsCtxMenu_Paste" Click="OnCmdArgsCtxMenu_Paste"/>
-                        <Separator/>
-                        <MenuItem Header="History" Name="CmdArgsCtxMenu_HistoryMenu"/>
-                    </ContextMenu>
-                </avalonEdit:TextEditor.ContextMenu>
-            </avalonEdit:TextEditor>
+    <DockPanel Height="Auto" Margin="3" LastChildFill="True">
+        <DockPanel x:Name="OptionsPane" DockPanel.Dock="Right" Margin="5" LastChildFill="True" Visibility="Collapsed">
+            <DockPanel x:Name="ColourPanel" DockPanel.Dock="Right"/>
+            <DockPanel DockPanel.Dock="Left" LastChildFill="False" Margin="3">
+                <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_Options" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
+                    <DockPanel x:Name="OptionsColoursDock_Options"/>
+                </RadioButton>
+                <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_SubOptions" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
+                    <DockPanel x:Name="OptionsColoursDock_SubOptions"/>
+                </RadioButton>
+                <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_Arguments" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
+                    <DockPanel x:Name="OptionsColoursDock_Arguments"/>
+                </RadioButton>
+                <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_Digits" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
+                    <DockPanel x:Name="OptionsColoursDock_Digits"/>
+                </RadioButton>
+                <Separator DockPanel.Dock="Top"/>
+                <DockPanel DockPanel.Dock="Top">
+                    <Label DockPanel.Dock="Left" Margin="0 0 5 0">History Size</Label>
+                    <TextBox x:Name="OptionsHistorySize" DockPanel.Dock="Left" PreviewTextInput="OnHistorySize_PreviewTextInput" AcceptsReturn="False" AcceptsTab="False"></TextBox>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Bottom">
+                    <Button x:Name="OptionsApplyButton" DockPanel.Dock="Top" MaxWidth="100" Click="OnApply_Click">Apply &amp; Close</Button>
+                    <Button x:Name="OptionsCancelButton" DockPanel.Dock="Top" MaxWidth="100" Click="OnCancel_Click">Cancel</Button>
+                </DockPanel>
+            </DockPanel>
         </DockPanel>
-    </Grid>
+        <avalonEdit:TextEditor x:Name="CmdArgs"
+                               FontFamily="Consolas"
+                               FontSize="10pt"
+                               DockPanel.Dock="Left"
+                               VerticalAlignment="Stretch"
+                               HorizontalAlignment="Stretch"
+                               HorizontalScrollBarVisibility="Disabled"
+                               VerticalScrollBarVisibility="Auto"
+                               TextChanged="OnTextChanged"
+                               GotFocus="OnFocus"
+                               PreviewKeyDown="OnPreviewKeyDown">
+            <avalonEdit:TextEditor.ContextMenu>
+                <ContextMenu Name="CmdArgsCtxMenu" Opened="OnCmdArgsCtxMenu_Opened">
+                    <MenuItem Header="Cut" Name="CmdArgsCtxMenu_Cut" Click="OnCmdArgsCtxMenu_Cut"/>
+                    <MenuItem Header="Copy" Name="CmdArgsCtxMenu_Copy" Click="OnCmdArgsCtxMenu_Copy"/>
+                    <MenuItem Header="Paste" Name="CmdArgsCtxMenu_Paste" Click="OnCmdArgsCtxMenu_Paste"/>
+                    <Separator />
+                    <MenuItem Header="History" Name="CmdArgsCtxMenu_HistoryMenu"/>
+                    <Separator />
+                    <MenuItem Header="Options" Name="CmdArgsCtxMenu_Options" Click="OnCmdArgsCtxMenu_Options"/>
+                </ContextMenu>
+            </avalonEdit:TextEditor.ContextMenu>
+        </avalonEdit:TextEditor>
+    </DockPanel>
 </UserControl>

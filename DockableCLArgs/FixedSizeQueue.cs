@@ -8,9 +8,9 @@ namespace MattC.DockableCLArgs
 {
     public class FixedSizeQueue<T> : Queue<T>
     {
-        public int Size { get; private set; }
+        public uint Size { get; private set; }
 
-        public FixedSizeQueue(int size)
+        public FixedSizeQueue(uint size)
         {
             Size = size;
         }
@@ -18,6 +18,15 @@ namespace MattC.DockableCLArgs
         public new void Enqueue(T obj)
         {
             base.Enqueue(obj);
+            while (base.Count > Size)
+            {
+                base.Dequeue();
+            }
+        }
+
+        public void Resize(uint newSize)
+        {
+            Size = newSize;
             while (base.Count > Size)
             {
                 base.Dequeue();

@@ -45,6 +45,9 @@ namespace MattC.DockableCLArgs
 
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            if (info == null)
+                throw new ArgumentNullException("info", "Failed to add brush colour to serialization info store; 'info' is null");
+
             info.AddValue("color", brush.Color.ToString(CultureInfo.InvariantCulture));
         }
     }
