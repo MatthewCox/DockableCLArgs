@@ -14,6 +14,7 @@
             <Style TargetType="{x:Type RadioButton}">
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="Height" Value="16"/>
+                <Setter Property="Foreground" Value="{DynamicResource VsBrush.ToolWindowText}" />
             </Style>
             <Style TargetType="{x:Type TextBlock}">
                 <Setter Property="VerticalAlignment" Value="Center" />

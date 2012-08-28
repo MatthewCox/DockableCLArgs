@@ -148,6 +148,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColUtils.cs" />
     <Compile Include="FixedSizeQueue.cs" />
     <Compile Include="DockableCLArgsControl.xaml.cs">
       <DependentUpon>DockableCLArgsControl.xaml</DependentUpon>

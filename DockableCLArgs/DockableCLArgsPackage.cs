@@ -1,13 +1,10 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
-using System.ComponentModel.Design;
-using Microsoft.Win32;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace MattC.DockableCLArgs
 {
@@ -37,7 +34,7 @@ namespace MattC.DockableCLArgs
     [ProvideToolWindowVisibility(typeof(DockableCLArgsToolWindow), UIContextGuids.SolutionExists)]
     // This attribute tags the class with the GUID of the Package
     [Guid(GuidList.guidDockableCLArgsPkgString)]
-    public sealed class DockableCLArgsPackage : Package//, IVsPersistSolutionOpts
+    public sealed class DockableCLArgsPackage : Package
     {
         public DockableCLArgsToolWindow MyWindow { get; private set; }
 
@@ -100,40 +97,6 @@ namespace MattC.DockableCLArgs
         }
 
         #endregion Package Members
-
-        /////////////////////////////////////////////////////////////////////////////
-        // Overridden IVsPersistSolutionOpts Implementation
-        #region IVsPersistSolutionOpts Members
-        /*
-        int IVsPersistSolutionOpts.LoadUserOptions(IVsSolutionPersistence persistence, uint grfLoadOpts)
-        {
-            if (MyWindow == null)
-                this.ShowToolWindow(this, new EventArgs());
-            return this.MyWindow.LoadUserOptions(persistence, grfLoadOpts);
-        }
-
-        int IVsPersistSolutionOpts.ReadUserOptions(IStream optionsStream, string pszKey)
-        {
-            if ( MyWindow == null )
-                return VSConstants.S_OK;
-            return this.MyWindow.ReadUserOptions(optionsStream, pszKey);
-        }
-
-        int IVsPersistSolutionOpts.SaveUserOptions(IVsSolutionPersistence persistence)
-        {
-            if (MyWindow != null)
-                this.MyWindow.SaveUserOptions(persistence);
-            return VSConstants.S_OK;
-        }
-  
-        int IVsPersistSolutionOpts.WriteUserOptions(IStream optionsStream, string pszKey)
-        {
-            if (MyWindow == null)
-                return VSConstants.S_OK;
-            return this.MyWindow.WriteUserOptions(optionsStream, pszKey);
-        }
-        */
-        #endregion IVsPersistSolutionOpts Members
 
     }
 }

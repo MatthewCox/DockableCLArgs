@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Windows;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using System.IO;
 
 namespace MattC.DockableCLArgs
 {
@@ -50,113 +41,5 @@ namespace MattC.DockableCLArgs
             // the object returned by the Content property.
             base.Content = new DockableCLArgsControl();
         }
-
-        /*
-        public int LoadUserOptions(IVsSolutionPersistence persistence, uint grfLoadOpts)
-        {
-            this.MyControl.History.Clear();
-
-            try
-            {
-                persistence.LoadPackageUserOpts(this, STR_DockableCLArgs_History);
-            }
-            finally
-            {
-                Marshal.ReleaseComObject(persistence);
-            }
-
-            return VSConstants.S_OK;
-        }
-
-        public int ReadUserOptions(IStream optionsStream, string pszKey)
-        {
-            try
-            {
-                using (StreamEater wrapper = new StreamEater(optionsStream))
-                {
-                    switch (pszKey)
-                    {
-                        case STR_DockableCLArgs_History:
-                            LoadOptions(wrapper);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                return VSConstants.S_OK;
-            }
-            finally
-            {
-                Marshal.ReleaseComObject(optionsStream);
-            }
-        }
-
-        public int SaveUserOptions(IVsSolutionPersistence persistence)
-        {
-            try
-            {
-                if (this.MyControl.History.Count > 0)
-                    persistence.SavePackageUserOpts(this, STR_DockableCLArgs_History);
-            }
-            finally
-            {
-                Marshal.ReleaseComObject(persistence);
-            }
-
-            return VSConstants.S_OK;
-        }
-
-        public int WriteUserOptions(IStream optionsStream, string pszKey)
-        {
-            try
-            {
-                using (StreamEater wrapper = new StreamEater(optionsStream))
-                {
-                    switch (pszKey)
-                    {
-                        case STR_DockableCLArgs_History:
-                            WriteOptions(wrapper);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                return VSConstants.S_OK;
-            }
-            finally
-            {
-                Marshal.ReleaseComObject(optionsStream);
-            }
-        }
-
-        private void WriteOptions(Stream storageStream)
-        {
-            if (this.MyControl.History.Count == 0)
-                return;
-
-            using (BinaryWriter writer = new BinaryWriter(storageStream))
-            {
-                writer.Write(this.MyControl.History.Count);
-                foreach (string historyItem in this.MyControl.History)
-                {
-                    writer.Write(historyItem);
-                }
-            }
-        }
-
-        private void LoadOptions(Stream storageStream)
-        {
-            using (BinaryReader reader = new BinaryReader(storageStream))
-            {
-                int historyCount = reader.ReadInt32();
-                for (int i = 0; i < historyCount; ++i)
-                {
-                    string historyItem = reader.ReadString();
-                    this.MyControl.History.Enqueue(historyItem);
-                }
-            }
-        }
-        */
     }
 }

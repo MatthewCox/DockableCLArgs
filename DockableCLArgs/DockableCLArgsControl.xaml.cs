@@ -2,31 +2,25 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Resources;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using EnvDTE;
 using EnvDTE80;
-using EnvDTE90;
-using EnvDTE100;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Document;
-using MattC.DockableCLArgs.Properties;
+
 using ColorPickerControls.Chips;
 using ColorPickerControls.Pickers;
-using System.Text.RegularExpressions;
+
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Highlighting;
+
+using MattC.DockableCLArgs.Properties;
 
 namespace MattC.DockableCLArgs
 {
@@ -142,7 +136,7 @@ namespace MattC.DockableCLArgs
             else
             {
                 runChangedHandler = false;
-                CmdArgs.Text = "Project type unsupported (C++, C#, and VB are supported (VB untested))";
+                CmdArgs.Text = DockableCLArgs.Resources.UnsupportedProjectType;
                 runChangedHandler = true;
             }
 
@@ -338,15 +332,16 @@ namespace MattC.DockableCLArgs
         {
             CmdArgsCtxMenu_Options.IsChecked = true;
 
-            FontsAndColorsItems faci = GetTextEditorFontAndColorsItems(dte);
-            Color back = GetBackgroundColourOf(faci, "Plain Text");
+            FontsAndColorsItems faci = ColUtils.GetTextEditorFontAndColorsItems(dte);
+            Color back = ColUtils.GetBackgroundColourOf(faci, "Plain Text");
 
             ColorChip colChip_Options = new ColorChip();
             colChip_Options.Name = "OptionsColours_Options";
-            colChip_Options.Color = ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.OptionColorLight : Settings.Default.OptionColorDark);
+            colChip_Options.Color = ColUtils.ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.OptionColorLight : Settings.Default.OptionColorDark);
             prevOptionColour = colChip_Options.Color;
             Label colChipLabel_Options = new Label();
             colChipLabel_Options.Content = "Options";
+            colChipLabel_Options.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
             DockPanel.SetDock(colChip_Options, Dock.Left);
             DockPanel.SetDock(colChipLabel_Options, Dock.Left);
             OptionsColoursDock_Options.Children.Add(colChip_Options);
@@ -354,10 +349,11 @@ namespace MattC.DockableCLArgs
 
             ColorChip colChip_SubOptions = new ColorChip();
             colChip_SubOptions.Name = "OptionsColours_SubOptions";
-            colChip_SubOptions.Color = ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.SubOptionColorLight : Settings.Default.SubOptionColorDark);
+            colChip_SubOptions.Color = ColUtils.ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.SubOptionColorLight : Settings.Default.SubOptionColorDark);
             prevSubOptionColour = colChip_SubOptions.Color;
             Label colChipLabel_SubOptions = new Label();
             colChipLabel_SubOptions.Content = "Sub Options";
+            colChipLabel_SubOptions.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
             DockPanel.SetDock(colChip_SubOptions, Dock.Left);
             DockPanel.SetDock(colChipLabel_SubOptions, Dock.Left);
             OptionsColoursDock_SubOptions.Children.Add(colChip_SubOptions);
@@ -365,10 +361,11 @@ namespace MattC.DockableCLArgs
 
             ColorChip colChip_Arguments = new ColorChip();
             colChip_Arguments.Name = "OptionsColours_Arguments";
-            colChip_Arguments.Color = ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.ArgumentColorLight : Settings.Default.ArgumentColorDark);
+            colChip_Arguments.Color = ColUtils.ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.ArgumentColorLight : Settings.Default.ArgumentColorDark);
             prevArgumentColour = colChip_Arguments.Color;
             Label colChipLabel_Arguments = new Label();
             colChipLabel_Arguments.Content = "Arguments";
+            colChipLabel_Arguments.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
             DockPanel.SetDock(colChip_Arguments, Dock.Left);
             DockPanel.SetDock(colChipLabel_Arguments, Dock.Left);
             OptionsColoursDock_Arguments.Children.Add(colChip_Arguments);
@@ -376,10 +373,11 @@ namespace MattC.DockableCLArgs
 
             ColorChip colChip_Digits = new ColorChip();
             colChip_Digits.Name = "OptionsColours_Digits";
-            colChip_Digits.Color = ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.DigitColorLight : Settings.Default.DigitColorDark);
+            colChip_Digits.Color = ColUtils.ConvertToMediaColor(IsLightTheme(back) ? Settings.Default.DigitColorLight : Settings.Default.DigitColorDark);
             prevDigitColour = colChip_Digits.Color;
             Label colChipLabel_Digits = new Label();
             colChipLabel_Digits.Content = "Digits";
+            colChipLabel_Digits.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
             DockPanel.SetDock(colChip_Digits, Dock.Left);
             DockPanel.SetDock(colChipLabel_Digits, Dock.Left);
             OptionsColoursDock_Digits.Children.Add(colChip_Digits);
@@ -389,11 +387,12 @@ namespace MattC.DockableCLArgs
             colPicker.InitialColor = colChip_Options.Color;
             colPicker.SelectedColor = colChip_Options.Color;
             colPicker.SelectedColorChanged += colPicker_SelectedColorChanged;
+            colPicker.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
             ColourPanel.Children.Add(colPicker);
 
             OptionsColours_Options.IsChecked = true;
 
-            OptionsHistorySize.Text = Settings.Default.HistorySize.ToString();
+            OptionsHistorySize.Text = Settings.Default.HistorySize.ToString(CultureInfo.CurrentCulture);
 
             OptionsPane.Visibility = System.Windows.Visibility.Visible;
         }
@@ -444,10 +443,10 @@ namespace MattC.DockableCLArgs
             RadioButton rad = radios.First(c => c.IsChecked == true);
             ((DockPanel)rad.Content).Children.OfType<ColorChip>().First().Color = e.Value;
 
-            System.Drawing.Color col = ConvertToDrawingColor(e.Value);
+            System.Drawing.Color col = ColUtils.ConvertToDrawingColor(e.Value);
 
-            FontsAndColorsItems faci = GetTextEditorFontAndColorsItems(dte);
-            Color back = GetBackgroundColourOf(faci, "Plain Text");
+            FontsAndColorsItems faci = ColUtils.GetTextEditorFontAndColorsItems(dte);
+            Color back = ColUtils.GetBackgroundColourOf(faci, "Plain Text");
             if (IsLightTheme(back))
             {
                 if (rad == OptionsColours_Options) Settings.Default.OptionColorLight = col;
@@ -466,21 +465,21 @@ namespace MattC.DockableCLArgs
 
         private void ResetColours()
         {
-            FontsAndColorsItems faci = GetTextEditorFontAndColorsItems(dte);
-            Color back = GetBackgroundColourOf(faci, "Plain Text");
+            FontsAndColorsItems faci = ColUtils.GetTextEditorFontAndColorsItems(dte);
+            Color back = ColUtils.GetBackgroundColourOf(faci, "Plain Text");
             if (IsLightTheme(back))
             {
-                Settings.Default.OptionColorLight = ConvertToDrawingColor(prevOptionColour);
-                Settings.Default.SubOptionColorLight = ConvertToDrawingColor(prevSubOptionColour);
-                Settings.Default.ArgumentColorLight = ConvertToDrawingColor(prevArgumentColour);
-                Settings.Default.DigitColorLight = ConvertToDrawingColor(prevDigitColour);
+                Settings.Default.OptionColorLight = ColUtils.ConvertToDrawingColor(prevOptionColour);
+                Settings.Default.SubOptionColorLight = ColUtils.ConvertToDrawingColor(prevSubOptionColour);
+                Settings.Default.ArgumentColorLight = ColUtils.ConvertToDrawingColor(prevArgumentColour);
+                Settings.Default.DigitColorLight = ColUtils.ConvertToDrawingColor(prevDigitColour);
             }
             else
             {
-                Settings.Default.OptionColorDark = ConvertToDrawingColor(prevOptionColour);
-                Settings.Default.SubOptionColorDark = ConvertToDrawingColor(prevSubOptionColour);
-                Settings.Default.ArgumentColorDark = ConvertToDrawingColor(prevArgumentColour);
-                Settings.Default.DigitColorDark = ConvertToDrawingColor(prevDigitColour);
+                Settings.Default.OptionColorDark = ColUtils.ConvertToDrawingColor(prevOptionColour);
+                Settings.Default.SubOptionColorDark = ColUtils.ConvertToDrawingColor(prevSubOptionColour);
+                Settings.Default.ArgumentColorDark = ColUtils.ConvertToDrawingColor(prevArgumentColour);
+                Settings.Default.DigitColorDark = ColUtils.ConvertToDrawingColor(prevDigitColour);
             }
         }
 
@@ -640,39 +639,19 @@ namespace MattC.DockableCLArgs
             }
         }
 
-        private static FontsAndColorsItems GetTextEditorFontAndColorsItems(DTE2 dte)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "plainText")]
+        public static bool IsLightTheme(System.Windows.Media.Color plainTextBackgroundColour)
         {
-            EnvDTE.Properties props = dte.get_Properties("FontsAndColors", "TextEditor");
-            return props.Item("FontsAndColorsItems").Object as FontsAndColorsItems;
+            System.Windows.Media.Color ptbc = plainTextBackgroundColour;
+            return ptbc.R + ptbc.G + ptbc.B > (128 * 3);
         }
-
-        private static System.Windows.Media.Color GetBackgroundColourOf(FontsAndColorsItems faci, string item)
-        {
-            Int32 oleColor = System.Convert.ToInt32(faci.Item(item).Background);
-            System.Drawing.Color sdColor = System.Drawing.ColorTranslator.FromOle(oleColor);
-            System.Windows.Media.Color backColor = System.Windows.Media.Color.FromArgb(sdColor.A, sdColor.R, sdColor.G, sdColor.B);
-            return backColor;
-        }
-
-        private static System.Windows.Media.Color GetForegroundColourOf(FontsAndColorsItems faci, string item)
-        {
-            Int32 oleColor = System.Convert.ToInt32(faci.Item(item).Foreground);
-            System.Drawing.Color sdColor = System.Drawing.ColorTranslator.FromOle(oleColor);
-            System.Windows.Media.Color foreColor = System.Windows.Media.Color.FromArgb(sdColor.A, sdColor.R, sdColor.G, sdColor.B);
-            return foreColor;
-        }
-
-        //private static bool GetBoldednessOf(FontsAndColorsItems faci, string item)
-        //{
-        //    return faci.Item(item).Bold;
-        //}
 
         private void SetPlainTextColours()
         {
-            FontsAndColorsItems faci = GetTextEditorFontAndColorsItems(dte);
-            Color back = GetBackgroundColourOf(faci, "Plain Text");
+            FontsAndColorsItems faci = ColUtils.GetTextEditorFontAndColorsItems(dte);
+            Color back = ColUtils.GetBackgroundColourOf(faci, "Plain Text");
             CmdArgs.Background = new SolidColorBrush(back);
-            
+
             if (IsLightTheme(back))
                 CmdArgs.SyntaxHighlighting = ResourceLoader.LoadHighlightingDefinition("Resources.CmdArgs-light.xshd");
             else
@@ -684,17 +663,17 @@ namespace MattC.DockableCLArgs
             Color argumentColor;
             if (IsLightTheme(back))
             {
-                digitColor = ConvertToMediaColor(Properties.Settings.Default.DigitColorLight);
-                optionColor = ConvertToMediaColor(Properties.Settings.Default.OptionColorLight);
-                subOptionColor = ConvertToMediaColor(Properties.Settings.Default.SubOptionColorLight);
-                argumentColor = ConvertToMediaColor(Properties.Settings.Default.ArgumentColorLight);
+                digitColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.DigitColorLight);
+                optionColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.OptionColorLight);
+                subOptionColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.SubOptionColorLight);
+                argumentColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.ArgumentColorLight);
             }
             else
             {
-                digitColor = ConvertToMediaColor(Properties.Settings.Default.DigitColorDark);
-                optionColor = ConvertToMediaColor(Properties.Settings.Default.OptionColorDark);
-                subOptionColor = ConvertToMediaColor(Properties.Settings.Default.SubOptionColorDark);
-                argumentColor = ConvertToMediaColor(Properties.Settings.Default.ArgumentColorDark);
+                digitColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.DigitColorDark);
+                optionColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.OptionColorDark);
+                subOptionColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.SubOptionColorDark);
+                argumentColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.ArgumentColorDark);
             }
             foreach (HighlightingColor hColor in CmdArgs.SyntaxHighlighting.NamedHighlightingColors)
             {
@@ -712,22 +691,6 @@ namespace MattC.DockableCLArgs
                 }
             }
             CmdArgs.Foreground = new SolidColorBrush(argumentColor);
-        }
-
-        private static bool IsLightTheme(System.Windows.Media.Color plainTextBackgroundColour)
-        {
-            Color ptbc = plainTextBackgroundColour;
-            return ptbc.R + ptbc.G + ptbc.B > (128 * 3);
-        }
-
-        private static System.Windows.Media.Color ConvertToMediaColor(System.Drawing.Color color)
-        {
-            return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
-        }
-
-        private static System.Drawing.Color ConvertToDrawingColor(System.Windows.Media.Color color)
-        {
-            return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
         #endregion Base Utility Functions

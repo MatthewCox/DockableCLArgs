@@ -3,11 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.11.0"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:cp="clr-namespace:ColorPickerControls.Pickers;assembly=ColorPickerControls"
              xmlns:cc="clr-namespace:ColorPickerControls.Chips;assembly=ColorPickerControls"
-             Background="{DynamicResource VsBrush.Window}"
-             Foreground="{DynamicResource VsBrush.WindowText}"
+             Background="{DynamicResource VsBrush.ToolWindowBackground}"
+             Foreground="{DynamicResource VsBrush.ToolWindowText}"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="600"
              Name="CmdLineArgs">
@@ -29,7 +30,7 @@
                 </RadioButton>
                 <Separator DockPanel.Dock="Top"/>
                 <DockPanel DockPanel.Dock="Top">
-                    <Label DockPanel.Dock="Left" Margin="0 0 5 0">History Size</Label>
+                    <Label DockPanel.Dock="Left" Margin="0 0 5 0" Foreground="{DynamicResource VsBrush.ToolWindowText}">History Size</Label>
                     <TextBox x:Name="OptionsHistorySize" DockPanel.Dock="Left" PreviewTextInput="OnHistorySize_PreviewTextInput" AcceptsReturn="False" AcceptsTab="False"></TextBox>
                 </DockPanel>
                 <DockPanel DockPanel.Dock="Bottom">
