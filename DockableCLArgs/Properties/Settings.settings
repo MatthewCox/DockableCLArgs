@@ -29,5 +29,8 @@
     <Setting Name="ArgumentColorLight" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">Black</Value>
     </Setting>
+    <Setting Name="HistoryItems" Type="System.String[]" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -130,5 +130,16 @@ namespace MattC.DockableCLArgs.Properties {
                 this["ArgumentColorLight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public string[] HistoryItems {
+            get {
+                return ((string[])(this["HistoryItems"]));
+            }
+            set {
+                this["HistoryItems"] = value;
+            }
+        }
     }
 }

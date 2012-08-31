@@ -56,11 +56,20 @@ namespace MattC.DockableCLArgs
         private Color prevArgumentColour;
         private Color prevDigitColour;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
         public DockableCLArgsControl()
         {
             InitializeComponent();
 
             history = new FixedSizeQueue<string>(Settings.Default.HistorySize);
+
+            if (Settings.Default.HistoryItems != null)
+            {
+                foreach (string historyItem in Settings.Default.HistoryItems)
+                {
+                    history.Enqueue(historyItem);
+                }
+            }
 
             lang = LANG.UNKNOWN;
 
@@ -558,6 +567,8 @@ namespace MattC.DockableCLArgs
         {
             if (!String.IsNullOrEmpty(value.Trim()) && !history.Contains(value))
                 history.Enqueue(value);
+
+            Settings.Default.HistoryItems = history.ToArray();
         }
 
         #endregion Core Functionality
