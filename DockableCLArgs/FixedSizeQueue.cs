@@ -1,32 +1,56 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace MattC.DockableCLArgs
 {
-    public class FixedSizeQueue<T> : Queue<T>
+    public class FixedSizeQueue<T>
     {
+        Queue<T> _queue;
+
         public uint Size { get; private set; }
 
         public FixedSizeQueue(uint size)
         {
+            _queue = new Queue<T>();
             Size = size;
         }
 
-        public new void Enqueue(T obj)
+        public virtual void Enqueue(T obj)
         {
-            base.Enqueue(obj);
-            while (base.Count > Size)
+            _queue.Enqueue(obj);
+            while (_queue.Count > Size)
             {
-                base.Dequeue();
+                _queue.Dequeue();
             }
         }
 
         public void Resize(uint newSize)
         {
             Size = newSize;
-            while (base.Count > Size)
+            while (_queue.Count > Size)
             {
-                base.Dequeue();
+                _queue.Dequeue();
             }
+        }
+
+        public bool Contains(T obj)
+        {
+            return _queue.Contains(obj);
+        }
+
+        public T[] ToArray()
+        {
+            return _queue.ToArray();
+        }
+
+        public int Count
+        {
+            get { return _queue.Count; }
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return _queue.GetEnumerator();
         }
     }
 }

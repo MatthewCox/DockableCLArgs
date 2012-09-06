@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -8,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -30,6 +32,8 @@ namespace MattC.DockableCLArgs
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     public partial class DockableCLArgsControl : UserControl
     {
+        #region Member Variables
+
         private bool runChangedHandler = true;
 
         private DTE2 dte;
@@ -42,11 +46,10 @@ namespace MattC.DockableCLArgs
             CPP,
             UNKNOWN
         }
-
         private static LANG lang;
 
-        private FixedSizeQueue<string> history;
-        public FixedSizeQueue<string> History
+        private AutoSavingFixedSizeQueue<string> history;
+        public AutoSavingFixedSizeQueue<string> History
         {
             get { return history; }
         }
@@ -56,20 +59,14 @@ namespace MattC.DockableCLArgs
         private Color prevArgumentColour;
         private Color prevDigitColour;
 
+        #endregion Member Variables
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
         public DockableCLArgsControl()
         {
             InitializeComponent();
 
-            history = new FixedSizeQueue<string>(Settings.Default.HistorySize);
-
-            if (Settings.Default.HistoryItems != null)
-            {
-                foreach (string historyItem in Settings.Default.HistoryItems)
-                {
-                    history.Enqueue(historyItem);
-                }
-            }
+            history = new AutoSavingFixedSizeQueue<string>(Settings.Default.HistorySize);
 
             lang = LANG.UNKNOWN;
 
@@ -122,13 +119,12 @@ namespace MattC.DockableCLArgs
         {
             lang = LANG.UNKNOWN;
 
-            IVsHierarchy startupProjHierarchy = GetStartupProjectHierarchy();
-            EnvDTE.Properties props = GetDtePropertiesFromHierarchy(startupProjHierarchy);
-            string commandArgs = GetProperty(props, "CommandArguments") as string ?? string.Empty;
-            if (String.IsNullOrEmpty(commandArgs))
+            EnvDTE.Properties props = GetDtePropertiesFromHierarchy();
+            string commandArgs = GetProperty(props, "CommandArguments") as string;
+            if (commandArgs == null)
             {
-                commandArgs = GetProperty(props, "StartArguments") as string ?? string.Empty;
-                if (!String.IsNullOrEmpty(commandArgs))
+                commandArgs = GetProperty(props, "StartArguments") as string;
+                if (commandArgs != null)
                     lang = LANG.CS;
             }
             else
@@ -141,6 +137,9 @@ namespace MattC.DockableCLArgs
                 runChangedHandler = true;
 
                 CmdArgs.IsEnabled = true;
+
+                history.Path = Path.Combine(GetStartupProjectDirectory(), "DockableCLArgsHistory.user");
+                history.Load();
             }
             else
             {
@@ -527,8 +526,7 @@ namespace MattC.DockableCLArgs
 
         private static string GetCommandArgs()
         {
-            IVsHierarchy startupProjHierarchy = GetStartupProjectHierarchy();
-            EnvDTE.Properties props = GetDtePropertiesFromHierarchy(startupProjHierarchy);
+            EnvDTE.Properties props = GetDtePropertiesFromHierarchy();
             if (props == null)
                 return "Disabled; no solution loaded";
 
@@ -548,8 +546,7 @@ namespace MattC.DockableCLArgs
 
         private static void SetCommandArgs(string value)
         {
-            IVsHierarchy startupProjHierarchy = GetStartupProjectHierarchy();
-            EnvDTE.Properties props = GetDtePropertiesFromHierarchy(startupProjHierarchy);
+            EnvDTE.Properties props = GetDtePropertiesFromHierarchy();
             if (props == null)
                 return;
             switch (lang)
@@ -566,9 +563,10 @@ namespace MattC.DockableCLArgs
         private void AddToHistory(string value)
         {
             if (!String.IsNullOrEmpty(value.Trim()) && !history.Contains(value))
+            {
                 history.Enqueue(value);
-
-            Settings.Default.HistoryItems = history.ToArray();
+            }
+            //Settings.Default.HistoryItems = history.ToArray();
         }
 
         #endregion Core Functionality
@@ -586,8 +584,11 @@ namespace MattC.DockableCLArgs
             return hierarchy;
         }
 
-        private static EnvDTE.Properties GetDtePropertiesFromHierarchy(IVsHierarchy hierarchy)
+        private static EnvDTE.Project GetDTEProjectFromHierarchy(IVsHierarchy hierarchy = null)
         {
+            if (hierarchy == null)
+                hierarchy = GetStartupProjectHierarchy();
+
             if (hierarchy == null)
                 return null;
 
@@ -596,6 +597,15 @@ namespace MattC.DockableCLArgs
                 return null;
 
             EnvDTE.Project project = projectobj as EnvDTE.Project;
+            if (project == null)
+                return null;
+
+            return project;
+        }
+
+        private static EnvDTE.Properties GetDtePropertiesFromHierarchy(IVsHierarchy hierarchy = null)
+        {
+            EnvDTE.Project project = GetDTEProjectFromHierarchy(hierarchy);
             if (project == null)
                 return null;
 
@@ -608,6 +618,15 @@ namespace MattC.DockableCLArgs
                 return null;
 
             return activeConfig.Properties;
+        }
+
+        private static string GetStartupProjectDirectory()
+        {
+            EnvDTE.Project project = GetDTEProjectFromHierarchy();
+            if (project == null)
+                return null;
+
+            return new FileInfo(project.FullName).Directory.FullName;
         }
 
         private static object GetProperty(EnvDTE.Properties properties, string name)
