@@ -246,6 +246,7 @@ namespace MattC.DockableCLArgs
 
         #region Context Menu
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
         private void BuildContextMenu()
         {
             CmdArgsCtxMenu_Cut.IsEnabled = true;
@@ -277,6 +278,8 @@ namespace MattC.DockableCLArgs
                     MenuItem savedMI = new MenuItem();
 
                     DockPanel savedMIPanel = new DockPanel();
+                    savedMIPanel.LastChildFill = false;
+                    savedMIPanel.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
 
                     TextBlock textBlock = new TextBlock();
                     textBlock.Text = kvp.Key;
@@ -344,15 +347,6 @@ namespace MattC.DockableCLArgs
             }
         }
 
-        private void deleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            string arg = (((DockPanel)((Button)sender).Parent).Children.OfType<TextBlock>().First().Text);
-            savedArgs.Remove(arg);
-            savedArgs.Save();
-
-            BuildContextMenu();
-        }
-
         private void OnCmdArgsCtxMenu_Opened(object sender, RoutedEventArgs e)
         {
             BuildContextMenu();
@@ -398,6 +392,15 @@ namespace MattC.DockableCLArgs
             runChangedHandler = false;
             CmdArgs.Text = GetCommandArgs();
             runChangedHandler = true;
+        }
+
+        private void deleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            string arg = (((DockPanel)((Button)sender).Parent).Children.OfType<TextBlock>().First().Text);
+            savedArgs.Remove(arg);
+            savedArgs.Save();
+
+            BuildContextMenu();
         }
 
         private void historyMI_OnClick(object sender, RoutedEventArgs e)
@@ -622,6 +625,12 @@ namespace MattC.DockableCLArgs
 
         #region Save Dialogue
 
+        private void InputTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+                SaveButton_Click(this, new RoutedEventArgs());
+        }
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (savedArgs.ContainsKey(InputTextBox.Text))
@@ -649,7 +658,7 @@ namespace MattC.DockableCLArgs
             CmdArgs.Focus();
         }
 
-        #endregion
+        #endregion Save Dialogue
 
         #region Core Functionality
 

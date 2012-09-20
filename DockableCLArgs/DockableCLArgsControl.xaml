@@ -79,10 +79,10 @@
                 VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Margin="5" Text="Saved Args Name:" FontWeight="Bold"/>
-                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
+                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox" KeyUp="InputTextBox_KeyUp"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="SaveButton" Margin="5" Content="Save" Background="{x:Null}" Click="SaveButton_Click"/>
-                        <Button x:Name="CancelButton" Margin="5" Content="Cancel" Background="{x:Null}" Click="CancelButton_Click"/>
+                        <Button x:Name="SaveButton" Margin="5" Content="Save" Click="SaveButton_Click"/>
+                        <Button x:Name="CancelButton" Margin="5" Content="Cancel" Click="CancelButton_Click"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
