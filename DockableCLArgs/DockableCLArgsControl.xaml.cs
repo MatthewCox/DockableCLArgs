@@ -23,6 +23,7 @@ using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 
 using MattC.DockableCLArgs.Properties;
+using System.Windows.Media.Imaging;
 
 namespace MattC.DockableCLArgs
 {
@@ -54,6 +55,12 @@ namespace MattC.DockableCLArgs
             get { return history; }
         }
 
+        private NamedArgsDictionary savedArgs;
+        public NamedArgsDictionary SavedArgs
+        {
+            get { return savedArgs; }
+        }
+
         private Color prevOptionColour;
         private Color prevSubOptionColour;
         private Color prevArgumentColour;
@@ -67,6 +74,7 @@ namespace MattC.DockableCLArgs
             InitializeComponent();
 
             history = new AutoSavingFixedSizeQueue<string>(Settings.Default.HistorySize);
+            savedArgs = new NamedArgsDictionary();
 
             lang = LANG.UNKNOWN;
 
@@ -106,7 +114,7 @@ namespace MattC.DockableCLArgs
             }
             catch (Exception)
             {
-                // Don't care if it fails
+                throw;// Don't care if it fails here
             }
         }
 
@@ -140,6 +148,8 @@ namespace MattC.DockableCLArgs
 
                 history.Path = Path.Combine(GetStartupProjectDirectory(), "DockableCLArgsHistory.user");
                 history.Load();
+                savedArgs.Path = Path.Combine(GetStartupProjectDirectory(), "DockableCLArgsSavedArgs.user");
+                savedArgs.Load();
             }
             else
             {
@@ -236,30 +246,16 @@ namespace MattC.DockableCLArgs
 
         #region Context Menu
 
-        private void OnCmdArgsCtxMenu_Cut(object sender, RoutedEventArgs e)
-        {
-            CmdArgs.Cut();
-            SetCommandArgs(CmdArgs.Text);
-        }
-
-        private void OnCmdArgsCtxMenu_Copy(object sender, RoutedEventArgs e)
-        {
-            CmdArgs.Copy();
-        }
-
-        private void OnCmdArgsCtxMenu_Paste(object sender, RoutedEventArgs e)
-        {
-            CmdArgs.Paste();
-            SetCommandArgs(CmdArgs.Text);
-        }
-
-        private void OnCmdArgsCtxMenu_Opened(object sender, RoutedEventArgs e)
+        private void BuildContextMenu()
         {
             CmdArgsCtxMenu_Cut.IsEnabled = true;
             CmdArgsCtxMenu_Copy.IsEnabled = true;
             CmdArgsCtxMenu_Paste.IsEnabled = true;
 
+            CmdArgsCtxMenu_SavedMenu.IsEnabled = false;
+            CmdArgsCtxMenu_SavedMenu.Header = "Saved";
             CmdArgsCtxMenu_HistoryMenu.IsEnabled = false;
+            CmdArgsCtxMenu_HistoryMenu.Header = "History";
 
             if (String.IsNullOrEmpty(CmdArgs.SelectedText))
             {
@@ -269,6 +265,51 @@ namespace MattC.DockableCLArgs
             if (!Clipboard.ContainsText())
             {
                 CmdArgsCtxMenu_Paste.IsEnabled = false;
+            }
+
+            if (savedArgs.Count > 0)
+            {
+                CmdArgsCtxMenu_SavedMenu.IsEnabled = true;
+
+                CmdArgsCtxMenu_SavedMenu.Items.Clear();
+                foreach (KeyValuePair<string, string> kvp in savedArgs)
+                {
+                    MenuItem savedMI = new MenuItem();
+
+                    DockPanel savedMIPanel = new DockPanel();
+
+                    TextBlock textBlock = new TextBlock();
+                    textBlock.Text = kvp.Key;
+                    savedMIPanel.Children.Add(textBlock);
+
+                    Button deleteButton = new Button();
+                    deleteButton.Content = new System.Windows.Controls.Image
+                    {
+                        Source = new BitmapImage(new Uri("Resources/Delete.png", UriKind.Relative))
+                    };
+                    deleteButton.Margin = new Thickness(20, 0, 0, 0);
+                    deleteButton.Click += deleteButton_Click;
+                    savedMIPanel.Children.Add(deleteButton);
+
+                    savedMI.Header = savedMIPanel;
+                    savedMI.Name = "SavedEntry";
+                    savedMI.IsCheckable = true;
+                    if (kvp.Value == GetCommandArgs())
+                        savedMI.IsChecked = true;
+                    savedMI.Click += savedMI_OnClick;
+
+                    TextBlock toolTipTextBlock = new TextBlock();
+                    toolTipTextBlock.Text = kvp.Value;
+                    toolTipTextBlock.TextWrapping = TextWrapping.Wrap;
+                    savedMI.ToolTip = toolTipTextBlock;
+                    ToolTipService.SetShowDuration(savedMI, 3600000);
+
+                    CmdArgsCtxMenu_SavedMenu.Items.Add(savedMI);
+                }
+
+                CmdArgsCtxMenu_SavedMenu.Header = string.Format(CultureInfo.CurrentCulture, "Saved ({0})", CmdArgsCtxMenu_SavedMenu.Items.Count);
+
+                CmdArgsCtxMenu_SavedMenu.UpdateLayout();
             }
 
             if (history.Count > 0)
@@ -303,14 +344,71 @@ namespace MattC.DockableCLArgs
             }
         }
 
+        private void deleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            string arg = (((DockPanel)((Button)sender).Parent).Children.OfType<TextBlock>().First().Text);
+            savedArgs.Remove(arg);
+            savedArgs.Save();
+
+            BuildContextMenu();
+        }
+
+        private void OnCmdArgsCtxMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            BuildContextMenu();
+        }
+
+        private void OnCmdArgsCtxMenu_Cut(object sender, RoutedEventArgs e)
+        {
+            CmdArgs.Cut();
+            SetCommandArgs(CmdArgs.Text);
+        }
+
+        private void OnCmdArgsCtxMenu_Copy(object sender, RoutedEventArgs e)
+        {
+            CmdArgs.Copy();
+        }
+
+        private void OnCmdArgsCtxMenu_Paste(object sender, RoutedEventArgs e)
+        {
+            CmdArgs.Paste();
+            SetCommandArgs(CmdArgs.Text);
+        }
+
+        private void OnCmdArgsCtxMenu_Save(object sender, RoutedEventArgs e)
+        {
+            InputBox.Visibility = System.Windows.Visibility.Visible;
+            InputTextBox.Focus();
+        }
+
+        private void savedMI_OnClick(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = sender as MenuItem;
+            string args = ((TextBlock)mi.ToolTip).Text;
+            SetCommandArgs(args);
+
+            foreach (MenuItem savedMI in CmdArgsCtxMenu_SavedMenu.Items)
+            {
+                if (((TextBlock)savedMI.ToolTip).Text == args)
+                    savedMI.IsChecked = true;
+                else
+                    savedMI.IsChecked = false;
+            }
+
+            runChangedHandler = false;
+            CmdArgs.Text = GetCommandArgs();
+            runChangedHandler = true;
+        }
+
         private void historyMI_OnClick(object sender, RoutedEventArgs e)
         {
             MenuItem mi = sender as MenuItem;
-            SetCommandArgs(((TextBlock)mi.Header).Text);
+            string args = ((TextBlock)mi.Header).Text;
+            SetCommandArgs(args);
 
             foreach (MenuItem historyMI in CmdArgsCtxMenu_HistoryMenu.Items)
             {
-                if (((TextBlock)historyMI.Header).Text == ((TextBlock)mi.Header).Text)
+                if (((TextBlock)historyMI.Header).Text == args)
                     historyMI.IsChecked = true;
                 else
                     historyMI.IsChecked = false;
@@ -522,6 +620,37 @@ namespace MattC.DockableCLArgs
 
         #endregion Options Pane
 
+        #region Save Dialogue
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (savedArgs.ContainsKey(InputTextBox.Text))
+            {
+                if (savedArgs[InputTextBox.Text] != CmdArgs.Text)
+                {
+                    MessageBoxResult result = MessageBox.Show(DockableCLArgs.Resources.NamedArgsExistMessage, DockableCLArgs.Resources.NamedArgsExistTitle, MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.No) return;
+                }
+                savedArgs[InputTextBox.Text] = CmdArgs.Text;
+            }
+            else
+            {
+                savedArgs.Add(InputTextBox.Text, CmdArgs.Text);
+            }
+            savedArgs.Save();
+
+            InputBox.Visibility = System.Windows.Visibility.Collapsed;
+            CmdArgs.Focus();
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            InputBox.Visibility = System.Windows.Visibility.Collapsed;
+            CmdArgs.Focus();
+        }
+
+        #endregion
+
         #region Core Functionality
 
         private static string GetCommandArgs()
@@ -566,7 +695,6 @@ namespace MattC.DockableCLArgs
             {
                 history.Enqueue(value);
             }
-            //Settings.Default.HistoryItems = history.ToArray();
         }
 
         #endregion Core Functionality

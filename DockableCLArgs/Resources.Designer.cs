@@ -70,6 +70,34 @@ namespace MattC.DockableCLArgs {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Delete {
+            get {
+                object obj = ResourceManager.GetObject("Delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A set of args with this name already exists, do you want to overwrite it?.
+        /// </summary>
+        internal static string NamedArgsExistMessage {
+            get {
+                return ResourceManager.GetString("NamedArgsExistMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Entry Exists.
+        /// </summary>
+        internal static string NamedArgsExistTitle {
+            get {
+                return ResourceManager.GetString("NamedArgsExistTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dockable Command Line Args.
         /// </summary>
         internal static string ToolWindowTitle {

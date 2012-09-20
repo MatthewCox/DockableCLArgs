@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace MattC.DockableCLArgs
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
     public class FixedSizeQueue<T>
     {
         Queue<T> _queue;

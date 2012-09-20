@@ -3,6 +3,7 @@ using System.Xml.Serialization;
 
 namespace MattC.DockableCLArgs
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
     public class AutoSavingFixedSizeQueue<T> : FixedSizeQueue<T>
     {
         public string Path { get; set; }
