@@ -5,8 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.11.0"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-             xmlns:cp="clr-namespace:ColorPickerControls.Pickers;assembly=ColorPickerControls"
-             xmlns:cc="clr-namespace:ColorPickerControls.Chips;assembly=ColorPickerControls"
              Background="{DynamicResource VsBrush.ToolWindowBackground}"
              Foreground="{DynamicResource VsBrush.ToolWindowText}"
              mc:Ignorable="d"
@@ -14,32 +12,6 @@
              Name="CmdLineArgs">
     <Grid>
         <DockPanel Height="Auto" Margin="3" LastChildFill="True">
-            <DockPanel x:Name="OptionsPane" DockPanel.Dock="Right" Margin="5" LastChildFill="True" Visibility="Collapsed">
-                <DockPanel x:Name="ColourPanel" DockPanel.Dock="Right"/>
-                <DockPanel DockPanel.Dock="Left" LastChildFill="False" Margin="3">
-                    <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_Options" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
-                        <DockPanel x:Name="OptionsColoursDock_Options"/>
-                    </RadioButton>
-                    <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_SubOptions" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
-                        <DockPanel x:Name="OptionsColoursDock_SubOptions"/>
-                    </RadioButton>
-                    <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_Arguments" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
-                        <DockPanel x:Name="OptionsColoursDock_Arguments"/>
-                    </RadioButton>
-                    <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_Digits" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
-                        <DockPanel x:Name="OptionsColoursDock_Digits"/>
-                    </RadioButton>
-                    <Separator DockPanel.Dock="Top"/>
-                    <DockPanel DockPanel.Dock="Top">
-                        <Label DockPanel.Dock="Left" Margin="0 0 5 0" Foreground="{DynamicResource VsBrush.ToolWindowText}">History Size</Label>
-                        <TextBox x:Name="OptionsHistorySize" DockPanel.Dock="Left" PreviewTextInput="OnHistorySize_PreviewTextInput" AcceptsReturn="False" AcceptsTab="False"></TextBox>
-                    </DockPanel>
-                    <DockPanel DockPanel.Dock="Bottom">
-                        <Button x:Name="OptionsApplyButton" DockPanel.Dock="Top" MaxWidth="100" Click="OnApply_Click">Apply &amp; Close</Button>
-                        <Button x:Name="OptionsCancelButton" DockPanel.Dock="Top" MaxWidth="100" Click="OnCancel_Click">Cancel</Button>
-                    </DockPanel>
-                </DockPanel>
-            </DockPanel>
             <avalonEdit:TextEditor x:Name="CmdArgs"
                                    FontFamily="Consolas"
                                    FontSize="10pt"
@@ -67,7 +39,7 @@
                 </avalonEdit:TextEditor.ContextMenu>
             </avalonEdit:TextEditor>
         </DockPanel>
-        <Grid x:Name="InputBox" Visibility="Collapsed">
+        <Grid x:Name="SaveInputBox" Visibility="Collapsed">
             <Grid Background="Black" Opacity="0.5"/>
             <Border
                 MinWidth="250"
@@ -78,8 +50,8 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="5" Text="Saved Args Name:" FontWeight="Bold"/>
-                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox" KeyUp="InputTextBox_KeyUp"/>
+                    <TextBlock Text="Saved Args Name:" Margin="5" FontWeight="Bold"/>
+                    <ComboBox x:Name="SaveInputComboBox" MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" IsEditable="True" KeyUp="SaveInputComboBox_KeyUp"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button x:Name="SaveButton" Margin="5" Content="Save" Click="SaveButton_Click"/>
                         <Button x:Name="CancelButton" Margin="5" Content="Cancel" Click="CancelButton_Click"/>

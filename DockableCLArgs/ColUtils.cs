@@ -43,5 +43,12 @@ namespace MattC.DockableCLArgs
         {
             return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "plainText")]
+        public static bool IsLightTheme(System.Windows.Media.Color plainTextBackgroundColour)
+        {
+            System.Windows.Media.Color ptbc = plainTextBackgroundColour;
+            return ptbc.R + ptbc.G + ptbc.B > (128 * 3);
+        }
     }
 }

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Dockable Command Line Args")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Imagination Technologies")]
+[assembly: AssemblyCompany("MattC")]
 [assembly: AssemblyProduct("Dockable Command Line Args")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]

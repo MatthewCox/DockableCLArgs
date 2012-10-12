@@ -1,0 +1,36 @@
+﻿<ui:DialogWindow x:Class="MattC.DockableCLArgs.OptionsDialogue"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.11.0"
+        Title="Options - Dockable Command Line Args" Height="330" Width="575"
+        Background="{DynamicResource VsBrush.ToolWindowBackground}"
+        Foreground="{DynamicResource VsBrush.ToolWindowText}">
+    <Grid Height="285" Width="550">
+        <DockPanel x:Name="OptionsPane" DockPanel.Dock="Right" Margin="5" LastChildFill="True">
+            <DockPanel x:Name="ColourPanel" DockPanel.Dock="Right"/>
+            <DockPanel DockPanel.Dock="Left" LastChildFill="False" Margin="3">
+                <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_Options" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
+                    <DockPanel x:Name="OptionsColoursDock_Options"/>
+                </RadioButton>
+                <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_SubOptions" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
+                    <DockPanel x:Name="OptionsColoursDock_SubOptions"/>
+                </RadioButton>
+                <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_Arguments" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
+                    <DockPanel x:Name="OptionsColoursDock_Arguments"/>
+                </RadioButton>
+                <RadioButton GroupName="OptionsColours" x:Name="OptionsColours_Digits" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
+                    <DockPanel x:Name="OptionsColoursDock_Digits"/>
+                </RadioButton>
+                <Separator DockPanel.Dock="Top"/>
+                <DockPanel DockPanel.Dock="Top">
+                    <Label DockPanel.Dock="Left" Margin="0 0 5 0" Foreground="{DynamicResource VsBrush.ToolWindowText}">History Size</Label>
+                    <TextBox x:Name="OptionsHistorySize" DockPanel.Dock="Left" PreviewTextInput="OnHistorySize_PreviewTextInput" AcceptsReturn="False" AcceptsTab="False"></TextBox>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Bottom">
+                    <Button x:Name="OptionsApplyButton" DockPanel.Dock="Top" MaxWidth="100" Click="OnApply_Click">Apply &amp; Close</Button>
+                    <Button x:Name="OptionsCancelButton" DockPanel.Dock="Top" MaxWidth="100" Click="OnCancel_Click">Cancel</Button>
+                </DockPanel>
+            </DockPanel>
+        </DockPanel>
+    </Grid>
+</ui:DialogWindow>

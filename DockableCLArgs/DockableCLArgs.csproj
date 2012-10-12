@@ -156,8 +156,14 @@
       <DependentUpon>DockableCLArgsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="DockableCLArgsToolWindow.cs" />
+    <Compile Include="GeneralUtils.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="History.cs" />
     <Compile Include="NamedArgsDictionary.cs" />
+    <Compile Include="OptionsDialogue.xaml.cs">
+      <DependentUpon>OptionsDialogue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectUtils.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -227,6 +233,10 @@
       <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="OptionsDialogue.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

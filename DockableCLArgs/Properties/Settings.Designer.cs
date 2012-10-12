@@ -133,12 +133,13 @@ namespace MattC.DockableCLArgs.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public string[] HistoryItems {
+        [global::System.Configuration.DefaultSettingValueAttribute("Consolas, 10pt")]
+        public global::System.Drawing.Font Font {
             get {
-                return ((string[])(this["HistoryItems"]));
+                return ((global::System.Drawing.Font)(this["Font"]));
             }
             set {
-                this["HistoryItems"] = value;
+                this["Font"] = value;
             }
         }
     }
