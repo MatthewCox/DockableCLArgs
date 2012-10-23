@@ -64,7 +64,7 @@ namespace MattC.DockableCLArgs
                 }
             }
 
-            SetPlainTextColours();
+            SetTextBoxProperties();
 
             runChangedHandler = false;
             CmdArgs.Text = IDEUtils.GetCommandArgs();
@@ -109,7 +109,7 @@ namespace MattC.DockableCLArgs
                 runChangedHandler = true;
             }
 
-            SetPlainTextColours();
+            SetTextBoxProperties();
         }
 
         #region TextBox Events
@@ -124,7 +124,7 @@ namespace MattC.DockableCLArgs
 
         private void OnFocus(object sender, RoutedEventArgs e)
         {
-            SetPlainTextColours();
+            SetTextBoxProperties();
 
             runChangedHandler = false;
             CmdArgs.Text = IDEUtils.GetCommandArgs();
@@ -164,7 +164,7 @@ namespace MattC.DockableCLArgs
 
         private void OnSettingChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            SetPlainTextColours();
+            SetTextBoxProperties();
         }
 
         #endregion Addin Events
@@ -441,7 +441,7 @@ namespace MattC.DockableCLArgs
 
         #region Base Utility Functions
 
-        private void SetPlainTextColours()
+        private void SetTextBoxProperties()
         {
             FontsAndColorsItems faci = ColUtils.GetTextEditorFontAndColorsItems(IDEUtils.DTE);
             Color back = ColUtils.GetBackgroundColourOf(faci, "Plain Text");
@@ -486,6 +486,9 @@ namespace MattC.DockableCLArgs
                 }
             }
             CmdArgs.Foreground = new SolidColorBrush(argumentColor);
+
+            CmdArgs.FontSize = Properties.Settings.Default.Font.SizeInPoints*(96.0/72.0);
+            CmdArgs.FontFamily = new FontFamily(Properties.Settings.Default.Font.Name);
         }
 
         #endregion Base Utility Functions

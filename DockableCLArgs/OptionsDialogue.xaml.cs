@@ -28,7 +28,7 @@ namespace MattC.DockableCLArgs
         {
             InitializeComponent();
 
-            OptionsHistorySize.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, GeneralUtils.DisablePasteEventHandler));
+            HistorySize.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, GeneralUtils.DisablePasteEventHandler));
 
             OpenOptionsDialogue();
         }
@@ -39,7 +39,7 @@ namespace MattC.DockableCLArgs
             Color back = ColUtils.GetBackgroundColourOf(faci, "Plain Text");
 
             ColorChip colChip_Options = new ColorChip();
-            colChip_Options.Name = "OptionsColours_Options";
+            colChip_Options.Name = "Colours_Options";
             colChip_Options.Color = ColUtils.ConvertToMediaColor(ColUtils.IsLightTheme(back) ? Settings.Default.OptionColorLight : Settings.Default.OptionColorDark);
             prevOptionColour = colChip_Options.Color;
             Label colChipLabel_Options = new Label();
@@ -47,11 +47,11 @@ namespace MattC.DockableCLArgs
             colChipLabel_Options.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
             DockPanel.SetDock(colChip_Options, Dock.Left);
             DockPanel.SetDock(colChipLabel_Options, Dock.Left);
-            OptionsColoursDock_Options.Children.Add(colChip_Options);
-            OptionsColoursDock_Options.Children.Add(colChipLabel_Options);
+            ColoursDock_Options.Children.Add(colChip_Options);
+            ColoursDock_Options.Children.Add(colChipLabel_Options);
 
             ColorChip colChip_SubOptions = new ColorChip();
-            colChip_SubOptions.Name = "OptionsColours_SubOptions";
+            colChip_SubOptions.Name = "Colours_SubOptions";
             colChip_SubOptions.Color = ColUtils.ConvertToMediaColor(ColUtils.IsLightTheme(back) ? Settings.Default.SubOptionColorLight : Settings.Default.SubOptionColorDark);
             prevSubOptionColour = colChip_SubOptions.Color;
             Label colChipLabel_SubOptions = new Label();
@@ -59,11 +59,11 @@ namespace MattC.DockableCLArgs
             colChipLabel_SubOptions.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
             DockPanel.SetDock(colChip_SubOptions, Dock.Left);
             DockPanel.SetDock(colChipLabel_SubOptions, Dock.Left);
-            OptionsColoursDock_SubOptions.Children.Add(colChip_SubOptions);
-            OptionsColoursDock_SubOptions.Children.Add(colChipLabel_SubOptions);
+            ColoursDock_SubOptions.Children.Add(colChip_SubOptions);
+            ColoursDock_SubOptions.Children.Add(colChipLabel_SubOptions);
 
             ColorChip colChip_Arguments = new ColorChip();
-            colChip_Arguments.Name = "OptionsColours_Arguments";
+            colChip_Arguments.Name = "Colours_Arguments";
             colChip_Arguments.Color = ColUtils.ConvertToMediaColor(ColUtils.IsLightTheme(back) ? Settings.Default.ArgumentColorLight : Settings.Default.ArgumentColorDark);
             prevArgumentColour = colChip_Arguments.Color;
             Label colChipLabel_Arguments = new Label();
@@ -71,11 +71,11 @@ namespace MattC.DockableCLArgs
             colChipLabel_Arguments.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
             DockPanel.SetDock(colChip_Arguments, Dock.Left);
             DockPanel.SetDock(colChipLabel_Arguments, Dock.Left);
-            OptionsColoursDock_Arguments.Children.Add(colChip_Arguments);
-            OptionsColoursDock_Arguments.Children.Add(colChipLabel_Arguments);
+            ColoursDock_Arguments.Children.Add(colChip_Arguments);
+            ColoursDock_Arguments.Children.Add(colChipLabel_Arguments);
 
             ColorChip colChip_Digits = new ColorChip();
-            colChip_Digits.Name = "OptionsColours_Digits";
+            colChip_Digits.Name = "Colours_Digits";
             colChip_Digits.Color = ColUtils.ConvertToMediaColor(ColUtils.IsLightTheme(back) ? Settings.Default.DigitColorLight : Settings.Default.DigitColorDark);
             prevDigitColour = colChip_Digits.Color;
             Label colChipLabel_Digits = new Label();
@@ -83,8 +83,8 @@ namespace MattC.DockableCLArgs
             colChipLabel_Digits.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
             DockPanel.SetDock(colChip_Digits, Dock.Left);
             DockPanel.SetDock(colChipLabel_Digits, Dock.Left);
-            OptionsColoursDock_Digits.Children.Add(colChip_Digits);
-            OptionsColoursDock_Digits.Children.Add(colChipLabel_Digits);
+            ColoursDock_Digits.Children.Add(colChip_Digits);
+            ColoursDock_Digits.Children.Add(colChipLabel_Digits);
 
             ColorPickerStandard colPicker = new ColorPickerStandard();
             colPicker.InitialColor = colChip_Options.Color;
@@ -93,9 +93,14 @@ namespace MattC.DockableCLArgs
             colPicker.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
             ColourPanel.Children.Add(colPicker);
 
-            OptionsColours_Options.IsChecked = true;
+            Colours_Options.IsChecked = true;
 
-            OptionsHistorySize.Text = Settings.Default.HistorySize.ToString(CultureInfo.CurrentCulture);
+            HistorySize.Text = Settings.Default.HistorySize.ToString(CultureInfo.CurrentCulture);
+
+            FontCombo.ItemsSource = Fonts.SystemFontFamilies.OrderBy(s => s.ToString());
+            FontCombo.SelectedItem = Fonts.SystemFontFamilies.OrderBy(s => s.ToString()).First(s => s.Source == Settings.Default.Font.Name);
+
+            FontSizeCombo.SelectedValue = Settings.Default.Font.SizeInPoints.ToString();
         }
 
         private void Clear()
@@ -104,7 +109,7 @@ namespace MattC.DockableCLArgs
 
             List<DockPanel> docks = new List<DockPanel>()
             {
-                OptionsColoursDock_Options, OptionsColoursDock_SubOptions, OptionsColoursDock_Arguments, OptionsColoursDock_Digits
+                ColoursDock_Options, ColoursDock_SubOptions, ColoursDock_Arguments, ColoursDock_Digits
             };
 
             foreach (DockPanel dock in docks)
@@ -117,7 +122,7 @@ namespace MattC.DockableCLArgs
         {
             List<RadioButton> radios = new List<RadioButton>()
             {
-                OptionsColours_Options, OptionsColours_SubOptions, OptionsColours_Arguments, OptionsColours_Digits
+                Colours_Options, Colours_SubOptions, Colours_Arguments, Colours_Digits
             };
 
             foreach (RadioButton rad in radios)
@@ -134,7 +139,7 @@ namespace MattC.DockableCLArgs
         {
             List<RadioButton> radios = new List<RadioButton>()
             {
-                OptionsColours_Options, OptionsColours_SubOptions, OptionsColours_Arguments, OptionsColours_Digits
+                Colours_Options, Colours_SubOptions, Colours_Arguments, Colours_Digits
             };
 
             RadioButton rad = radios.First(c => c.IsChecked == true);
@@ -146,17 +151,17 @@ namespace MattC.DockableCLArgs
             Color back = ColUtils.GetBackgroundColourOf(faci, "Plain Text");
             if (ColUtils.IsLightTheme(back))
             {
-                if (rad == OptionsColours_Options) Settings.Default.OptionColorLight = col;
-                else if (rad == OptionsColours_SubOptions) Settings.Default.SubOptionColorLight = col;
-                else if (rad == OptionsColours_Arguments) Settings.Default.ArgumentColorLight = col;
-                else if (rad == OptionsColours_Digits) Settings.Default.DigitColorLight = col;
+                if (rad == Colours_Options) Settings.Default.OptionColorLight = col;
+                else if (rad == Colours_SubOptions) Settings.Default.SubOptionColorLight = col;
+                else if (rad == Colours_Arguments) Settings.Default.ArgumentColorLight = col;
+                else if (rad == Colours_Digits) Settings.Default.DigitColorLight = col;
             }
             else
             {
-                if (rad == OptionsColours_Options) Settings.Default.OptionColorDark = col;
-                else if (rad == OptionsColours_SubOptions) Settings.Default.SubOptionColorDark = col;
-                else if (rad == OptionsColours_Arguments) Settings.Default.ArgumentColorDark = col;
-                else if (rad == OptionsColours_Digits) Settings.Default.DigitColorDark = col;
+                if (rad == Colours_Options) Settings.Default.OptionColorDark = col;
+                else if (rad == Colours_SubOptions) Settings.Default.SubOptionColorDark = col;
+                else if (rad == Colours_Arguments) Settings.Default.ArgumentColorDark = col;
+                else if (rad == Colours_Digits) Settings.Default.DigitColorDark = col;
             }
         }
 
@@ -180,7 +185,7 @@ namespace MattC.DockableCLArgs
             }
         }
 
-        private void OnHistorySize_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void OnNumericTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !IsTextNumeric(e.Text);
         }
@@ -194,10 +199,15 @@ namespace MattC.DockableCLArgs
         private void OnApply_Click(object sender, RoutedEventArgs e)
         {
             uint newHistorySize = Settings.Default.HistorySize;
-            if (uint.TryParse(OptionsHistorySize.Text, out newHistorySize))
+            if (uint.TryParse(HistorySize.Text, out newHistorySize))
             {
                 History.GetHistory.Resize(newHistorySize);
                 Settings.Default.HistorySize = newHistorySize;
+            }
+            float newFontSize = Settings.Default.Font.SizeInPoints;
+            if (float.TryParse((string)((ComboBoxItem)FontSizeCombo.SelectedItem).Content, out newFontSize))
+            {
+                Settings.Default.Font = new System.Drawing.Font(Settings.Default.Font.Name, newFontSize);
             }
 
             Clear();
@@ -209,6 +219,26 @@ namespace MattC.DockableCLArgs
             ResetColours();
             Clear();
             this.Close();
+        }
+
+        private void OnFontCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            System.Drawing.Font oldFont = Settings.Default.Font;
+            try
+            {
+                Settings.Default.Font = new System.Drawing.Font(((FontFamily)FontCombo.SelectedItem).Source, Settings.Default.Font.SizeInPoints);
+            }
+            catch (System.ArgumentException /*e*/)
+            {
+                FontCombo.SelectedItem = e.RemovedItems[0];
+            }
+        }
+
+        private void OnFontSizeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            float newFontSize = Settings.Default.Font.SizeInPoints;
+            if (float.TryParse((string)((ComboBoxItem)FontSizeCombo.SelectedItem).Content, out newFontSize))
+                Settings.Default.Font = new System.Drawing.Font(Settings.Default.Font.Name, newFontSize);
         }
     }
 }
