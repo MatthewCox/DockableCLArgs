@@ -24,15 +24,21 @@ namespace MattC.DockableCLArgs
     {
         Color prevOptionColour, prevSubOptionColour, prevArgumentColour, prevDigitColour;
 
+        string prevFontName;
+        float prevFontSize;
+
         public OptionsDialogue()
         {
             InitializeComponent();
+
+            FontSizeSlider.ValueChanged += OnFontSizeSlider_ValueChanged;
 
             HistorySize.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, GeneralUtils.DisablePasteEventHandler));
 
             OpenOptionsDialogue();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
         private void OpenOptionsDialogue()
         {
             FontsAndColorsItems faci = ColUtils.GetTextEditorFontAndColorsItems(IDEUtils.DTE);
@@ -97,10 +103,13 @@ namespace MattC.DockableCLArgs
 
             HistorySize.Text = Settings.Default.HistorySize.ToString(CultureInfo.CurrentCulture);
 
+            prevFontName = Settings.Default.Font.Name;
+            prevFontSize = Settings.Default.Font.SizeInPoints;
+
             FontCombo.ItemsSource = Fonts.SystemFontFamilies.OrderBy(s => s.ToString());
             FontCombo.SelectedItem = Fonts.SystemFontFamilies.OrderBy(s => s.ToString()).First(s => s.Source == Settings.Default.Font.Name);
 
-            FontSizeCombo.SelectedValue = Settings.Default.Font.SizeInPoints.ToString();
+            FontSizeSlider.Value = Settings.Default.Font.SizeInPoints;
         }
 
         private void Clear()
@@ -165,7 +174,7 @@ namespace MattC.DockableCLArgs
             }
         }
 
-        private void ResetColours()
+        private void ResetOptions()
         {
             FontsAndColorsItems faci = ColUtils.GetTextEditorFontAndColorsItems(IDEUtils.DTE);
             Color back = ColUtils.GetBackgroundColourOf(faci, "Plain Text");
@@ -183,6 +192,8 @@ namespace MattC.DockableCLArgs
                 Settings.Default.ArgumentColorDark = ColUtils.ConvertToDrawingColor(prevArgumentColour);
                 Settings.Default.DigitColorDark = ColUtils.ConvertToDrawingColor(prevDigitColour);
             }
+
+            Settings.Default.Font = new System.Drawing.Font(prevFontName, prevFontSize);
         }
 
         private void OnNumericTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -204,11 +215,6 @@ namespace MattC.DockableCLArgs
                 History.GetHistory.Resize(newHistorySize);
                 Settings.Default.HistorySize = newHistorySize;
             }
-            float newFontSize = Settings.Default.Font.SizeInPoints;
-            if (float.TryParse((string)((ComboBoxItem)FontSizeCombo.SelectedItem).Content, out newFontSize))
-            {
-                Settings.Default.Font = new System.Drawing.Font(Settings.Default.Font.Name, newFontSize);
-            }
 
             Clear();
             this.Close();
@@ -216,7 +222,7 @@ namespace MattC.DockableCLArgs
 
         private void OnCancel_Click(object sender, RoutedEventArgs e)
         {
-            ResetColours();
+            ResetOptions();
             Clear();
             this.Close();
         }
@@ -234,11 +240,9 @@ namespace MattC.DockableCLArgs
             }
         }
 
-        private void OnFontSizeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnFontSizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            float newFontSize = Settings.Default.Font.SizeInPoints;
-            if (float.TryParse((string)((ComboBoxItem)FontSizeCombo.SelectedItem).Content, out newFontSize))
-                Settings.Default.Font = new System.Drawing.Font(Settings.Default.Font.Name, newFontSize);
+            Settings.Default.Font = new System.Drawing.Font(Settings.Default.Font.Name, (float)e.NewValue);
         }
     }
 }
