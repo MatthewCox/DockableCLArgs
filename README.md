@@ -1,40 +1,9 @@
-Changelog
-=========
+A Visual Studio 2012 extension providing easy access to project debug command line arguments, via a dockable re-sizeable textbox.
 
-[25/10/2012] v
-    Changed the font size control to a slider
-    Font settings now revert when you press cancel
-[23/10/2012] v
-    Added font customization options
-[12/10/2012] v
-    Moved options to a dialogue window
-[20/09/2012] v
-    Changed the saved args menu and dialogue for better look & feel, main thing is Enter == Save for the dialogue now
-[20/09/2012] v
-    Added saved/loaded named sets of args (again per-project)
-    Changed the menu icon
-[06/09/2012] v
-    Changed history to save/load per-project
-[31/08/2012] v
-    Added history save/restore
-[28/08/2012] v
-    Finished off UI theme matching
-    Refactored a bunch of re-usable stuff
-    Removed a ton of dead code
-[24/08/2012] v
-    Added options pane, with colour and history buffer size options
-[17/08/2012] v
-    Added VS theme matching
-    Added settings infrastructure, not yet exposed
-    Renamed the root namespace
-[14/08/2012] v
-    Added syntax highlighting
-    Added history under context menu
+## Features ##
+- history
+- saved command line args, which you can name
+- syntax highlighting
+- a range of settings; history depth, font family and size, syntax highlighting colours
 
-Future plans (in priority order)
-================================
-
-* Detect closing of properties window and update if detected
-* Allow you to change the startup project?
-* Change message displayed during startup (currently the 'language not supported' message is shown, which is bollocks, at least until the project finishes loading)
-* Externalize the syntax highlighting definition to somewhere sensible and easily accessible. Same place as the *.user files, potentially? (per-project AND a global one would be best if at all possible)
+If you'd like to help with the project, I've listed my future plans at the bottom of CHANGELOG.txt - other ideas are also welcome.
