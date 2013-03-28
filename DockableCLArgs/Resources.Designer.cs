@@ -116,7 +116,7 @@ namespace MattC.DockableCLArgs {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Project type unsupported (C++, C#, and VB are supported (VB support is untested)).
+        ///   Looks up a localized string similar to Project type unsupported (C++, C#, and VB projects are supported (VB support is untested)).
         /// </summary>
         internal static string UnsupportedProjectType {
             get {

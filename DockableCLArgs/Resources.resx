@@ -137,6 +137,6 @@
     <value>Dockable Command Line Args</value>
   </data>
   <data name="UnsupportedProjectType" xml:space="preserve">
-    <value>Project type unsupported (C++, C#, and VB are supported (VB support is untested))</value>
+    <value>Project type unsupported (C++, C#, and VB projects are supported (VB support is untested))</value>
   </data>
 </root>
