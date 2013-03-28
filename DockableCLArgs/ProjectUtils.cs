@@ -150,7 +150,7 @@ namespace MattC.DockableCLArgs
         {
             EnvDTE.Properties props = IDEUtils.GetDtePropertiesFromHierarchy();
             if (props == null)
-                return "Disabled; no solution loaded";
+                return DockableCLArgs.Resources.StartupMessage;
 
             string commandArgs = string.Empty;
             switch (lang)

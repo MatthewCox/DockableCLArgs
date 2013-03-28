@@ -36,6 +36,5 @@ Future plans (in descending priority order)
 
 * Detect closing of properties window and update textbox if detected (no events are raised for changes to project settings, unfortunately)
 * Detect change of startup project via solution explorer and update textbox accordingly
-* Change message displayed during startup (currently the 'language not supported' message is shown, which is bollocks, at least until the project finishes loading)
 * Externalize the syntax highlighting definition to somewhere sensible and easily accessible. Same place as the *.user files, potentially? (per-project AND a global one would be best if at all possible)
-* UI to change the startup project? Perhaps via a dropdown on the right-click menu (I don't really want anything but the textbox to be displayed at all times, but some hideable controls on the left or right side could also work - the settings window used to be displayed on the textbox's panel, so look at some early commits for how to do this)
+* UI to change the startup project? Perhaps via a dropdown on the right-click menu (I don't really want anything but the textbox to be displayed at all times, but some hideable controls on the left or right side could work - the settings window used to be displayed on the textbox's panel, so look at some early commits for how to do this)

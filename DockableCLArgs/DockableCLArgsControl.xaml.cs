@@ -89,24 +89,34 @@ namespace MattC.DockableCLArgs
             CmdArgs.FontFamily = new FontFamily(Properties.Settings.Default.Font.FontFamily.Name);
             CmdArgs.FontSize = Properties.Settings.Default.Font.SizeInPoints;
 
-            if (lang != IDEUtils.ProjLang.UNKNOWN)
+            EnvDTE.Properties props = IDEUtils.GetDtePropertiesFromHierarchy();
+            if (props == null)
             {
                 runChangedHandler = false;
-                CmdArgs.Text = IDEUtils.GetCommandArgs();
+                CmdArgs.Text = DockableCLArgs.Resources.StartupMessage;
                 runChangedHandler = true;
-
-                CmdArgs.IsEnabled = true;
-
-                History.Init();
-
-                savedArgs.Path = Path.Combine(IDEUtils.GetStartupProjectDirectory(), "DockableCLArgsSavedArgs.user");
-                savedArgs.Load();
             }
             else
             {
-                runChangedHandler = false;
-                CmdArgs.Text = DockableCLArgs.Resources.UnsupportedProjectType;
-                runChangedHandler = true;
+                if (lang != IDEUtils.ProjLang.UNKNOWN)
+                {
+                    runChangedHandler = false;
+                    CmdArgs.Text = IDEUtils.GetCommandArgs();
+                    runChangedHandler = true;
+
+                    CmdArgs.IsEnabled = true;
+
+                    History.Init();
+
+                    savedArgs.Path = Path.Combine(IDEUtils.GetStartupProjectDirectory(), "DockableCLArgsSavedArgs.user");
+                    savedArgs.Load();
+                }
+                else
+                {
+                    runChangedHandler = false;
+                    CmdArgs.Text = DockableCLArgs.Resources.UnsupportedProjectType;
+                    runChangedHandler = true;
+                }
             }
 
             SetTextBoxProperties();
