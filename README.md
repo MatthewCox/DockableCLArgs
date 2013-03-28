@@ -7,9 +7,11 @@ A Visual Studio 2012 extension providing easy access to project debug command li
 - supports C++, C#, and VB projects (VB support is untested, let me know if there are problems)
 
 ## License ##
-The project is under the [MIT license](https://github.com/MatthewCox/DockableCLArgs/blob/master/LICENSE.txt), so do whatever you want with it as long as you include the license and an attribution to me.
+The project as a whole is under the [MIT license](https://github.com/MatthewCox/DockableCLArgs/blob/master/LICENSE.txt), so do whatever you want with it as long as you include the license and an attribution to me.
 
-The colour controls on the settings window are from [this CodeProject](http://www.codeproject.com/Articles/131708/WPF-Color-Picker-Construction-Kit), and they're under the [Code Project Open License](http://www.codeproject.com/info/cpol10.aspx).
+The textbox control is [AvalonEdit](https://github.com/icsharpcode/SharpDevelop/wiki/AvalonEdit), which is under the [LGPL](http://www.gnu.org/copyleft/lesser.html).
+
+The colour controls on the settings window are from the [WPF Color Picker Construction Kit](http://www.codeproject.com/Articles/131708/WPF-Color-Picker-Construction-Kit), and they're under the [Code Project Open License](http://www.codeproject.com/info/cpol10.aspx).
 
 ## Help with the project ##
 
