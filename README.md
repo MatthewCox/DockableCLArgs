@@ -2,8 +2,12 @@ A Visual Studio 2012 extension providing easy access to project debug command li
 
 ## Features ##
 - history & saved command line args, via right click menu
-- syntax highlighting ![](http://i.imgur.com/ganhXVZ.png)
-- a range of settings; history depth, font family and size, syntax highlighting colours ![](http://i.imgur.com/di7wk8t.png)
+- syntax highlighting
+
+<p align="center"><img src="http://i.imgur.com/ganhXVZ.png" /></p>
+- a range of settings; history depth, font family and size, syntax highlighting colours
+
+<p align="center"><img src="http://i.imgur.com/di7wk8t.png" /></p>
 - supports C++, C#, and VB projects (VB support is untested, let me know if there are problems)
 
 ## License ##
