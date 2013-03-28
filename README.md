@@ -6,4 +6,12 @@ A Visual Studio 2012 extension providing easy access to project debug command li
 - syntax highlighting
 - a range of settings; history depth, font family and size, syntax highlighting colours
 
-If you'd like to help with the project, I've listed my future plans at the bottom of CHANGELOG.txt - other ideas are also welcome.
+## License ##
+The project is under the MIT license, so do whatever you want with it as long as you include the license and an attribution to me.
+
+The colour controls on the settings window are from this CodeProject: http://www.codeproject.com/Articles/131708/WPF-Color-Picker-Construction-Kit
+They're under the Code Project Open License: http://www.codeproject.com/info/cpol10.aspx
+
+## Help with the project ##
+
+If you'd like to help with the project, I've listed my future plans at the bottom of CHANGELOG.txt - other ideas are also welcome (and pull requests even more welcome!)
