@@ -1,4 +1,4 @@
-A Visual Studio 2012 extension providing easy access to project debug command line arguments, via a dockable re-sizeable textbox.
+A Visual Studio 2012/2013 extension providing easy access to project debug command line arguments, via a dockable re-sizeable textbox.
 
 ## Features ##
 - history & saved command line args, via right click menu
