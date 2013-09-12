@@ -1,6 +1,8 @@
 Changelog
 =========
 
+[11/09/2013] v
+    Updated version compatibility to work with the VS 2013 RC (and probably the actual release when it comes)
 [25/10/2012] v
     Changed the font size control to a slider
     Font settings now revert when you press cancel

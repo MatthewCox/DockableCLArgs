@@ -1,7 +1,8 @@
-A Visual Studio 2012 extension providing easy access to project debug command line arguments, via a dockable re-sizeable textbox.
+A Visual Studio 2012/2013 extension providing easy access to project debug command line arguments, via a dockable re-sizeable textbox.
 
 ## Features ##
 - history & saved command line args, via right click menu
+- matches the light/dark theme settings of visual studio
 - syntax highlighting
 
 <p align="center"><img src="http://i.imgur.com/ganhXVZ.png" /></p>
@@ -20,3 +21,7 @@ The colour controls on the settings window are from the [WPF Color Picker Constr
 ## Help with the project ##
 
 If you'd like to help with the project, I've listed my future plans at the bottom of [CHANGELOG.txt](https://github.com/MatthewCox/DockableCLArgs/blob/master/CHANGELOG.txt) - other ideas are also welcome (and pull requests even more welcome!)
+
+Pre-requisits for compiling the extension yourself:
+- VS 2012/2013, Professional edition or higher
+- VS [2012](http://www.microsoft.com/en-gb/download/details.aspx?id=30668)/[2013](http://www.microsoft.com/en-gb/download/details.aspx?id=40004) SDK
