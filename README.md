@@ -3,6 +3,7 @@ A Visual Studio 2012/2013 extension providing easy access to project debug comma
 ## Features ##
 - history & saved command line args, via right click menu
 - syntax highlighting
+- matches the light/dark theme settings of visual studio
 
 <p align="center"><img src="http://i.imgur.com/ganhXVZ.png" /></p>
 - a range of settings; history depth, font family and size, syntax highlighting colours
