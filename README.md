@@ -1,5 +1,8 @@
 A Visual Studio 2012/2013 extension providing easy access to project debug command line arguments, via a dockable re-sizeable textbox.
 
+## Download ##
+[DockableCLArgs.vsix](https://github.com/MatthewCox/DockableCLArgs/raw/master/DockableCLArgs.vsix)
+
 ## Features ##
 - history & saved command line args, via right click menu
 - matches the light/dark theme settings of visual studio
