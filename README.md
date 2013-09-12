@@ -21,3 +21,7 @@ The colour controls on the settings window are from the [WPF Color Picker Constr
 ## Help with the project ##
 
 If you'd like to help with the project, I've listed my future plans at the bottom of [CHANGELOG.txt](https://github.com/MatthewCox/DockableCLArgs/blob/master/CHANGELOG.txt) - other ideas are also welcome (and pull requests even more welcome!)
+
+Pre-requisits for compiling the extension yourself:
+- VS 2012/2013, Professional edition or higher
+- VS [2012](http://www.microsoft.com/en-gb/download/details.aspx?id=30668)/[2013](http://www.microsoft.com/en-gb/download/details.aspx?id=40004) SDK
