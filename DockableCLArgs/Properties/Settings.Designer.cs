@@ -25,7 +25,7 @@ namespace MattC.DockableCLArgs.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100, 140, 175")]
+        [global::System.Configuration.DefaultSettingValueAttribute("145, 200, 96")]
         public global::System.Drawing.Color OptionColorDark {
             get {
                 return ((global::System.Drawing.Color)(this["OptionColorDark"]));
@@ -140,6 +140,30 @@ namespace MattC.DockableCLArgs.Properties {
             }
             set {
                 this["Font"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Green")]
+        public global::System.Drawing.Color StringColorLight {
+            get {
+                return ((global::System.Drawing.Color)(this["StringColorLight"]));
+            }
+            set {
+                this["StringColorLight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("236, 118, 0")]
+        public global::System.Drawing.Color StringColorDark {
+            get {
+                return ((global::System.Drawing.Color)(this["StringColorDark"]));
+            }
+            set {
+                this["StringColorDark"] = value;
             }
         }
     }

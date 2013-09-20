@@ -8,10 +8,10 @@ A Visual Studio 2012/2013 extension providing easy access to project debug comma
 - matches the light/dark theme settings of visual studio
 - syntax highlighting
 
-<p align="center"><img src="http://i.imgur.com/ganhXVZ.png" /></p>
-- a range of settings; history depth, font family and size, syntax highlighting colours
+<p align="center"><img src="http://i.imgur.com/PLRu8ox.png" /></p>
+- a range of settings; history depth, font family and size, syntax highlighting colours. All visual settings update live as you adjust them, and revert if you cancel out of the options window.
 
-<p align="center"><img src="http://i.imgur.com/di7wk8t.png" /></p>
+<p align="center"><img src="http://i.imgur.com/Br7i88y.png" /></p>
 - supports C++, C#, and VB projects (VB support is untested, let me know if there are problems)
 
 ## License ##

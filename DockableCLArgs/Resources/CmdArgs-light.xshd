@@ -4,8 +4,13 @@
   <Color name="Digits" foreground="Maroon" />
   <Color name="Option" foreground="Blue" />
   <Color name="SubOption" foreground="Purple" />
+  <Color name="String" foreground="Green" />
 
   <RuleSet ignoreCase="true">
+
+    <Rule color="String">
+      (?&lt;!\\)(".*?(?&lt;!\\)")
+    </Rule>
 
     <Rule color="Option">
       (^|\s)[\-/][^\s=]+

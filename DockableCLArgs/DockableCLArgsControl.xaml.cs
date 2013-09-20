@@ -465,12 +465,14 @@ namespace MattC.DockableCLArgs
             Color digitColor;
             Color optionColor;
             Color subOptionColor;
+            Color stringColor;
             Color argumentColor;
             if (ColUtils.IsLightTheme(back))
             {
                 digitColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.DigitColorLight);
                 optionColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.OptionColorLight);
                 subOptionColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.SubOptionColorLight);
+                stringColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.StringColorLight);
                 argumentColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.ArgumentColorLight);
             }
             else
@@ -478,6 +480,7 @@ namespace MattC.DockableCLArgs
                 digitColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.DigitColorDark);
                 optionColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.OptionColorDark);
                 subOptionColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.SubOptionColorDark);
+                stringColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.StringColorDark);
                 argumentColor = ColUtils.ConvertToMediaColor(Properties.Settings.Default.ArgumentColorDark);
             }
             foreach (HighlightingColor hColor in CmdArgs.SyntaxHighlighting.NamedHighlightingColors)
@@ -492,6 +495,9 @@ namespace MattC.DockableCLArgs
                         break;
                     case "SubOption":
                         hColor.Foreground = new SimpleHighlightingBrush(subOptionColor);
+                        break;
+                    case "String":
+                        hColor.Foreground = new SimpleHighlightingBrush(stringColor);
                         break;
                 }
             }

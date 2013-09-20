@@ -22,7 +22,7 @@ namespace MattC.DockableCLArgs
     /// </summary>
     public partial class OptionsDialogue : DialogWindow
     {
-        Color prevOptionColour, prevSubOptionColour, prevArgumentColour, prevDigitColour;
+        Color prevOptionColour, prevSubOptionColour, prevArgumentColour, prevDigitColour, prevStringColour;
 
         string prevFontName;
         float prevFontSize;
@@ -92,6 +92,18 @@ namespace MattC.DockableCLArgs
             ColoursDock_Digits.Children.Add(colChip_Digits);
             ColoursDock_Digits.Children.Add(colChipLabel_Digits);
 
+            ColorChip colChip_Strings = new ColorChip();
+            colChip_Strings.Name = "Colours_Strings";
+            colChip_Strings.Color = ColUtils.ConvertToMediaColor(ColUtils.IsLightTheme(back) ? Settings.Default.StringColorLight : Settings.Default.StringColorDark);
+            prevStringColour = colChip_Strings.Color;
+            Label colChipLabel_Strings = new Label();
+            colChipLabel_Strings.Content = "Strings";
+            colChipLabel_Strings.Foreground = new SolidColorBrush(ColUtils.GetForegroundColourOf(faci, "Plain Text"));
+            DockPanel.SetDock(colChip_Strings, Dock.Left);
+            DockPanel.SetDock(colChipLabel_Strings, Dock.Left);
+            ColoursDock_Strings.Children.Add(colChip_Strings);
+            ColoursDock_Strings.Children.Add(colChipLabel_Strings);
+
             ColorPickerStandard colPicker = new ColorPickerStandard();
             colPicker.InitialColor = colChip_Options.Color;
             colPicker.SelectedColor = colChip_Options.Color;
@@ -118,7 +130,7 @@ namespace MattC.DockableCLArgs
 
             List<DockPanel> docks = new List<DockPanel>()
             {
-                ColoursDock_Options, ColoursDock_SubOptions, ColoursDock_Arguments, ColoursDock_Digits
+                ColoursDock_Options, ColoursDock_SubOptions, ColoursDock_Arguments, ColoursDock_Digits, ColoursDock_Strings
             };
 
             foreach (DockPanel dock in docks)
@@ -131,7 +143,7 @@ namespace MattC.DockableCLArgs
         {
             List<RadioButton> radios = new List<RadioButton>()
             {
-                Colours_Options, Colours_SubOptions, Colours_Arguments, Colours_Digits
+                Colours_Options, Colours_SubOptions, Colours_Arguments, Colours_Digits, Colours_Strings
             };
 
             foreach (RadioButton rad in radios)
@@ -148,7 +160,7 @@ namespace MattC.DockableCLArgs
         {
             List<RadioButton> radios = new List<RadioButton>()
             {
-                Colours_Options, Colours_SubOptions, Colours_Arguments, Colours_Digits
+                Colours_Options, Colours_SubOptions, Colours_Arguments, Colours_Digits, Colours_Strings
             };
 
             RadioButton rad = radios.First(c => c.IsChecked == true);
@@ -164,6 +176,7 @@ namespace MattC.DockableCLArgs
                 else if (rad == Colours_SubOptions) Settings.Default.SubOptionColorLight = col;
                 else if (rad == Colours_Arguments) Settings.Default.ArgumentColorLight = col;
                 else if (rad == Colours_Digits) Settings.Default.DigitColorLight = col;
+                else if (rad == Colours_Strings) Settings.Default.StringColorLight = col;
             }
             else
             {
@@ -171,6 +184,7 @@ namespace MattC.DockableCLArgs
                 else if (rad == Colours_SubOptions) Settings.Default.SubOptionColorDark = col;
                 else if (rad == Colours_Arguments) Settings.Default.ArgumentColorDark = col;
                 else if (rad == Colours_Digits) Settings.Default.DigitColorDark = col;
+                else if (rad == Colours_Strings) Settings.Default.StringColorDark = col;
             }
         }
 
@@ -184,6 +198,7 @@ namespace MattC.DockableCLArgs
                 Settings.Default.SubOptionColorLight = ColUtils.ConvertToDrawingColor(prevSubOptionColour);
                 Settings.Default.ArgumentColorLight = ColUtils.ConvertToDrawingColor(prevArgumentColour);
                 Settings.Default.DigitColorLight = ColUtils.ConvertToDrawingColor(prevDigitColour);
+                Settings.Default.StringColorLight = ColUtils.ConvertToDrawingColor(prevStringColour);
             }
             else
             {
@@ -191,6 +206,7 @@ namespace MattC.DockableCLArgs
                 Settings.Default.SubOptionColorDark = ColUtils.ConvertToDrawingColor(prevSubOptionColour);
                 Settings.Default.ArgumentColorDark = ColUtils.ConvertToDrawingColor(prevArgumentColour);
                 Settings.Default.DigitColorDark = ColUtils.ConvertToDrawingColor(prevDigitColour);
+                Settings.Default.StringColorDark = ColUtils.ConvertToDrawingColor(prevStringColour);
             }
 
             Settings.Default.Font = new System.Drawing.Font(prevFontName, prevFontSize);

@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.11.0"
-        Title="Options - Dockable Command Line Args" Height="330" Width="575"
+        Title="Options - Dockable Command Line Args" Height="345" Width="575"
         Background="{DynamicResource VsBrush.ToolWindowBackground}"
         Foreground="{DynamicResource VsBrush.ToolWindowText}"
         mc:Ignorable="d">
-    <Grid Height="285" Width="550">
+    <Grid Height="300" Width="550">
         <DockPanel x:Name="Options" DockPanel.Dock="Right" Margin="5" LastChildFill="True">
             <DockPanel x:Name="ColourPanel" DockPanel.Dock="Right" d:DesignWidth="400"/>
             <DockPanel DockPanel.Dock="Left" LastChildFill="False" Margin="3">
@@ -24,6 +24,9 @@
                 </RadioButton>
                 <RadioButton GroupName="Colours" x:Name="Colours_Digits" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
                     <DockPanel x:Name="ColoursDock_Digits"/>
+                </RadioButton>
+                <RadioButton GroupName="Colours" x:Name="Colours_Strings" DockPanel.Dock="Top" Checked="OnColourRadio_Checked">
+                    <DockPanel x:Name="ColoursDock_Strings"/>
                 </RadioButton>
                 <Separator DockPanel.Dock="Top"/>
                 <DockPanel DockPanel.Dock="Top">

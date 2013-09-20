@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="OptionColorDark" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">100, 140, 175</Value>
+      <Value Profile="(Default)">145, 200, 96</Value>
     </Setting>
     <Setting Name="DigitColorDark" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">255, 205, 34</Value>
@@ -31,6 +31,12 @@
     </Setting>
     <Setting Name="Font" Type="System.Drawing.Font" Scope="User">
       <Value Profile="(Default)">Consolas, 10pt</Value>
+    </Setting>
+    <Setting Name="StringColorLight" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Green</Value>
+    </Setting>
+    <Setting Name="StringColorDark" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">236, 118, 0</Value>
     </Setting>
   </Settings>
 </SettingsFile>
