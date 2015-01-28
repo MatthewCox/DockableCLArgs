@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Text.RegularExpressions;
 
 namespace ColorPicker
 {
@@ -163,7 +164,40 @@ namespace ColorPicker
 
         #endregion
 
-
+         private void TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if ( ! IsValidHexColor( txtHex.Text ) )
+                return;
+ 
+            try
+            {
+                Color newColor = (Color)ColorConverter.ConvertFromString("#" + txtHex.Text);
+ 
+                // if string can be converted into appropriate color and there is no exception, accept the Color
+                Color = newColor;
+            } catch( NotSupportedException ex )
+            {
+                // In case of exception do nothing
+            }
+        }
+ 
+        // Filter invalid colors as much as possible
+        private bool IsValidHexColor( string hexText )
+        {
+            if ( hexText.Length != 6 )
+                return false;
+         
+            // Now, check to see if the format is right
+            Regex rgx = new Regex(@"[a-fA-F0-9]+");
+ 
+            for ( int i = 0; i < hexText.Length; ++i )
+            {
+                if ( ! rgx.IsMatch( hexText, i ) )
+                    return false;
+            }
+ 
+            return true;
+        }
 
         public HexDisplay()
         {
