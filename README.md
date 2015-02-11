@@ -27,4 +27,4 @@ If you'd like to help with the project, I've listed my future plans at the botto
 
 Pre-requisits for compiling the extension yourself:
 - VS 2012/2013, Professional edition or higher
-- VS [2012](http://www.microsoft.com/en-gb/download/details.aspx?id=30668)/[2013](http://www.microsoft.com/en-gb/download/details.aspx?id=40004) SDK
+- VS [2012](http://www.microsoft.com/en-gb/download/details.aspx?id=30668)/[2013](http://www.microsoft.com/en-gb/download/details.aspx?id=40758) SDK
