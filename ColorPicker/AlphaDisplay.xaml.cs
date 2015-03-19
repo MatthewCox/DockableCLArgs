@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Text.RegularExpressions;
 
 namespace ColorPicker
 {
@@ -128,6 +129,32 @@ namespace ColorPicker
                 var alphaPercent = 100 * (imgTransparency.ActualHeight - (e.GetPosition((IInputElement)sender)).Y) / imgTransparency.ActualHeight;
                 sAlpha.Value = alphaPercent;
             }
+        }
+        
+        private void TxtAlphaChanged(object sender, TextChangedEventArgs e)
+       { 
+          if ( txtAlpha.Text == "" )
+             return;
+
+          if ( IsValidAlpha( txtAlpha.Text ) )
+          {
+            Alpha = Convert.ToByte( Convert.ToInt16( txtAlpha.Text ) * 2.55 );
+          }
+       }
+
+       // Filter invalid colors as much as possible
+        private bool IsValidAlpha( string value )
+        {
+            if ( Convert.ToInt16( value ) == 100 )
+               return true;
+
+            if ( value.Length > 2 )
+                return false;
+          
+            // Now, check to see if the format is right
+            Regex rgx = new Regex(@"([0-9]){2}");
+
+            return rgx.IsMatch( value );
         }
     }
 }
