@@ -195,17 +195,11 @@ namespace ColorPicker
         {
             if ( hexText.Length != 6 )
                 return false;
-         
+          
             // Now, check to see if the format is right
-            Regex rgx = new Regex(@"[a-fA-F0-9]+");
- 
-            for ( int i = 0; i < hexText.Length; ++i )
-            {
-                if ( ! rgx.IsMatch( hexText, i ) )
-                    return false;
-            }
- 
-            return true;
+            Regex rgx = new Regex(@"([a-fA-F0-9]){6}");
+
+            return rgx.IsMatch( hexText );
         }
 
         public HexDisplay()
