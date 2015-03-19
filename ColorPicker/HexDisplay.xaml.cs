@@ -39,6 +39,8 @@ namespace ColorPicker
         public static DependencyProperty ColorProperty = DependencyProperty.Register("Color", typeof(Color), ClassType,
              new FrameworkPropertyMetadata(Colors.Black, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnColorChanged));
 
+        public static bool InternalSet = false;
+        
         [ Category("ColorPicker")]
         public Color Color
         {
@@ -54,6 +56,11 @@ namespace ColorPicker
 
         private static void OnColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            if ( InternalSet )
+            {
+               return;
+            }
+            
             var c = (Color)e.NewValue;
             var rd = (HexDisplay)d;
             rd.OnColorChanged(c);
@@ -171,10 +178,12 @@ namespace ColorPicker
  
             try
             {
-                Color newColor = (Color)ColorConverter.ConvertFromString("#" + txtHex.Text);
- 
                 // if string can be converted into appropriate color and there is no exception, accept the Color
+                Color newColor = (Color)ColorConverter.ConvertFromString("#00" + txtHex.Text);
+                
+                InternalSet = true;
                 Color = newColor;
+                InternalSet = false;
             } catch( NotSupportedException ex )
             {
                 // In case of exception do nothing
