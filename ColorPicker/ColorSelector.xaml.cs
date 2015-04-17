@@ -1,4 +1,4 @@
-﻿using System;
+private void OnColorChanged(Color color)﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
@@ -105,9 +105,10 @@ namespace ColorPicker
                 selectionTransform.X = SelectionPoint.X - (mSelectionPane.PixelWidth / 2.0);
                 selectionTransform.Y = SelectionPoint.Y - (mSelectionPane.PixelHeight / 2.0);
 
-
+                ProcessSliderEvents = false;
                 sNormal.Value = NormalComponent.Value(color);
-
+                ProcessSliderEvents = true;
+                
                 if (!NormalComponent.IsNormalIndependantOfColor)
                 {
                     NormalComponent.UpdateNormalBitmap(mNormalPane, color);
@@ -317,9 +318,9 @@ namespace ColorPicker
         #endregion
 
 
-        private int lastColorComponentValue = -1;
+        private double lastColorComponentValue = -1;
         private string lastComponentName = "";
-        private void UpdateColorPlaneBitmap(int colorComponentValue)
+        private void UpdateColorPlaneBitmap(double colorComponentValue)
         {
 
             if (lastColorComponentValue != colorComponentValue || lastComponentName != NormalComponent.Name)
