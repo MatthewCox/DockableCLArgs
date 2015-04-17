@@ -35,6 +35,8 @@ namespace ColorPicker.ColorModels.HSB
         public static DependencyProperty ColorProperty = DependencyProperty.Register("Color", typeof(Color), ClassType,
              new FrameworkPropertyMetadata(Colors.Black, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnColorChanged));
 
+        public static bool InternalSet = false;
+
          [Category("ColorPicker")]
         public Color Color
         {
@@ -50,9 +52,18 @@ namespace ColorPicker.ColorModels.HSB
 
         private static void OnColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var c = (Color)e.NewValue;
-            var rd = (HsbDisplay)d;
-            rd.OnColorChanged(c);
+            InternalSet = true;
+            
+            txtH.Text = ( (int)sHue.Value(c) ).ToString();
+            txtS.Text = ( (int)sSaturation.Value(c) ).ToString();
+            txtB.Text = ( (int)sBrightness.Value(c) ).ToString();
+
+            InternalSet = false;
+            
+            if (ColorChanged != null)
+            {
+                ColorChanged(this, new EventArgs<Color>(c));
+            }
         }
 
         private void OnColorChanged(Color c)
@@ -159,6 +170,11 @@ namespace ColorPicker.ColorModels.HSB
 
         private void TextChanged(object sender, TextChangedEventArgs e)
         {
+            if ( InternalSet )
+            {
+               return;
+            }
+            
             try
             {
 
