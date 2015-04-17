@@ -22,7 +22,7 @@ namespace ColorPicker.ColorModels.CMYK
 
         
 
-        public override int Value(System.Windows.Media.Color color)
+        public override double Value(System.Windows.Media.Color color)
         {
             return sModel.YComponent(color).AsPercent();
         }
