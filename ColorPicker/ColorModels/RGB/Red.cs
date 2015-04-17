@@ -41,7 +41,7 @@ namespace ColorPicker.ColorModels.RGB
 
         }
 
-        public override void UpdateColorPlaneBitmap(WriteableBitmap bitmap, int normalComponentValue)
+        public override void UpdateColorPlaneBitmap(WriteableBitmap bitmap, double normalComponentValue)
         {
             unsafe
             {
@@ -76,7 +76,7 @@ namespace ColorPicker.ColorModels.RGB
             return new Point(color.B, 255 - color.G);
         }
 
-        public override int Value(Color color)
+        public override double Value(Color color)
         {
             return color.R;
         }
