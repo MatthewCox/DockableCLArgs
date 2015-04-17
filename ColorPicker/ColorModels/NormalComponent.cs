@@ -17,7 +17,7 @@ namespace ColorPicker.ColorModels
         public abstract void UpdateNormalBitmap(WriteableBitmap bitmap, Color color);
 
         //Updates the color plane bitmap (the bitmap where one selects the colors)
-        public abstract void UpdateColorPlaneBitmap(WriteableBitmap bitmap, int normalComponentValue);
+        public abstract void UpdateColorPlaneBitmap(WriteableBitmap bitmap, double normalComponentValue);
 
         //Gets the color corresponding to a selected point (with 255 alpha)
         public abstract Color  ColorAtPoint(Point selectionPoint,int colorComponentValue);
