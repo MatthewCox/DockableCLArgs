@@ -56,7 +56,7 @@ namespace ColorPicker.ColorModels.HSB
             }
         }
 
-        public override void UpdateColorPlaneBitmap(WriteableBitmap bitmap, int normalComponentValue)
+        public override void UpdateColorPlaneBitmap(WriteableBitmap bitmap, double normalComponentValue)
         {
             unsafe
             {
@@ -166,11 +166,11 @@ namespace ColorPicker.ColorModels.HSB
             return new Point(x, y);
         }
 
-        public override int Value(System.Windows.Media.Color color)
+        public override double Value(System.Windows.Media.Color color)
         {
 
          
-            return Convert.ToInt32((sModel.SComponent(color)) * 100);
+            return (sModel.SComponent(color)) * 100;
         }
 
         public override string Name

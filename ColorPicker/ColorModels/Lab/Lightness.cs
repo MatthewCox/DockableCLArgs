@@ -47,7 +47,7 @@ sealed	class Lightness:NormalComponent
 			}
 		}
 
-		public override void UpdateColorPlaneBitmap(System.Windows.Media.Imaging.WriteableBitmap bitmap, int normalComponentValue)
+		public override void UpdateColorPlaneBitmap(System.Windows.Media.Imaging.WriteableBitmap bitmap, double normalComponentValue)
 		{
 			unsafe
 			{
@@ -132,9 +132,9 @@ sealed	class Lightness:NormalComponent
 			get { return 100; }
 		}
 
-		public override int Value(System.Windows.Media.Color color)
+		public override double Value(System.Windows.Media.Color color)
 		{
-		   return Convert.ToInt32( sModel.LComponent(color));
+		   return sModel.LComponent(color);
 		}
 
 		public override string Name
