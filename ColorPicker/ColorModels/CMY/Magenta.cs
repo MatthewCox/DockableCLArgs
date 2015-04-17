@@ -20,9 +20,9 @@ namespace ColorPicker.ColorModels.CMY
             get {return 100; }
         }
 
-        public override int Value(System.Windows.Media.Color color)
+        public override double Value(System.Windows.Media.Color color)
         {
-            return (int) sModel.MComponent(color);
+            return sModel.MComponent(color);
         }
 
         public override string Name
