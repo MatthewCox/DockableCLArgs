@@ -54,7 +54,7 @@ namespace ColorPicker.ColorModels.Lab
             }
         }
 
-        public override void UpdateColorPlaneBitmap(System.Windows.Media.Imaging.WriteableBitmap bitmap, int normalComponentValue)
+        public override void UpdateColorPlaneBitmap(System.Windows.Media.Imaging.WriteableBitmap bitmap, double normalComponentValue)
         {
             unsafe
             {
@@ -145,9 +145,9 @@ namespace ColorPicker.ColorModels.Lab
             get { return "LAB_B"; }
         }
 
-        public override int Value(Color color)
+        public override double Value(Color color)
         {
-           return Convert.ToInt32( sModel.BComponent(color));
+           return sModel.BComponent(color);
         }
     }
 }
