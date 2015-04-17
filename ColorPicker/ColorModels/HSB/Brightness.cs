@@ -54,7 +54,7 @@ namespace ColorPicker.ColorModels.HSB
             }
         }
 
-        public override void UpdateColorPlaneBitmap(WriteableBitmap bitmap, int normalComponentValue)
+        public override void UpdateColorPlaneBitmap(WriteableBitmap bitmap, double normalComponentValue)
         {
             unsafe
             {
@@ -149,7 +149,7 @@ namespace ColorPicker.ColorModels.HSB
 
         public override Color ColorAtPoint(Point selectionPoint, int colorComponentValue)
         {
-            var hue = (359 * selectionPoint.X / 255);
+            var hue = (double)(359 * selectionPoint.X / 255);
             var brightness =(double)colorComponentValue/100;
             var saturation = (1 - (double)selectionPoint.Y / 255);
             return sModel.Color(hue, saturation, brightness);
@@ -162,10 +162,10 @@ namespace ColorPicker.ColorModels.HSB
             return new Point(x, y);
         }
 
-        public override int Value(Color color)
+        public override double Value(Color color)
         {
             double max = Math.Max(color.R, Math.Max(color.G, color.B));
-            int b =Convert.ToInt32(max*100/255 ) ;
+            double b = max*100/255;
             return b;
         }
 
